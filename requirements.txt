@@ -1,0 +1,9 @@
+# This requirements file lists all dependecies for this project.
+#
+# Run 'pip install -r requirements.txt -t lib/' to install these dependencies
+# Or in case of each, pip install -t lib beautifulsoup4
+# in this project's lib/ directory.  The `lib` directory is added to `sys.path`
+# by `appengine_config.py`.
+#WSGI micro web-framework--http://bottlepy.org/docs/0.12/index.html
+bottle==0.12.9
+
