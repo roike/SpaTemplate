@@ -1,6 +1,7 @@
-#Spa Template On GAE
+#Spa Template for GAE
+#use your application id
 application: elabo-two
-version: 1-01
+version: 1-03
 runtime: python27
 api_version: 1
 threadsafe: yes

@@ -2,6 +2,7 @@
  * template spa.uriAncjor.js
  * Copyright 2016 ryuji.oike@gmail.com
  *-----------------------------------------------------------------
+ * 
 */
 
 /*jslint         browser : true, continue : true,
