@@ -14,9 +14,8 @@
 
 /*
  -----ajaxの引数---------------
- ajax.get(url, params, callback)
- ajax.post(url, params, callback)
- paramsがない場合はnullにする
+ ajax.get(url, params)
+ ajax.post(url, params)
  -----response-----------------
  data = JSON.parse(response) == {publish: <val>, appsid: <appsid>}
 */

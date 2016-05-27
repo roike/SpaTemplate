@@ -1,23 +1,47 @@
-##Single Page Application Template for Google App Engine with Python
-本テンプレートはmmikowskiさんの「シングルページWebアプリケーション」に構造の大枠を依存しながらも、最近の技術動向も踏まえてGAEのWebアプリケーションテンプレートとして動作するようにしたものです。  
+##Single Page Application Skeleton for Google App Engine with Python
+本テンプレートはmmikowskiさんの「シングルページWebアプリケーション」をひな形にしながらも、最近の技術動向も踏まえてGAEのWebアプリケーションテンプレートとして動作するようにしたものです。
 
-コードの中身はオリジナルと大きく変わっていますが、超重量級SPAライブラリ類とは真逆に、超軽量で透過的なライブラリというmmikowskiさんの考え方を踏襲しています。  
+ 参考にしたmmikowskiさんのSPAコードは<https://github.com/mmikowski>にあります。
 
- mmikowskiさんのSPAオリジナルコードは<https://github.com/mmikowski>にあります。
+##Features
+The event to hear  URI Anchor changes  created by a call Pushstate  is Popstate, like so:
 
-##本テンプレートの特徴
-実装的な特徴として、画面遷移の契機にはオリジナルのハッシュバンではなくpushStateを使用しています。Google検索では前者の推薦を終了して後者を歓迎していますが、画面遷移的にもより自然だと感じています。  
+```
+const onPopstate = event => {
+  moduleMap[anchor].initModule( stateMap.container );
+};
+       
+window.addEventListener('popstate', onPopstate);
+```
+The both of Pushstate and Popstate are specified from HTML5.  The spa.uriAnchor.js module  has two methods to create the Anchor component. They are  the setAnchor and the makeAnchor.  
 
-ES6に依存する一方でjQueryは除きました。利用する必要性がなくなってきていることとDomに直接触れない方向を模索中ということが理由です。  
+HTML5で追加されたpopStateイベントでAnchorの変化を追跡しページの切り替えをローカルに行います。モジュールのspa.uriAnchorにはAnchorコンポーネントを生成するsetAnchorとmakeAnchorMapという2つのメソッドがあります。  
 
-またデータの送受信はコールバック仕様ではなく、オリジナル同様、PubSub仕様に沿ったイベント駆動を採用しています。
+The spa.gevent.js is a tiny publish/subscribe based module. This has synchronisation decoupling, so topics are published asynchronously.  
+
+サーバ側とのメッセージ交換には以下のようなPubSubパターンを使っています。
+
+```
+spa.gevent.subscribe( stateMap.container, 'spa-login', onLogin  );
+
+ajax.post('/login', params)
+        .then(response => {
+          stateMap.user = JSON.parse(response);
+          spa.gevent.publish( 'spa-login', stateMap.user);
+        })
+
+const onLogin = event => {
+    const user_map = event.detail;
+    spa.uriAnchor.setAnchor( { 'page': user_map.anchor }, false );
+};
+```
 
 
-##デモサイト
+##Demo
 本テンプレートの動作検証サイトは<https://elabo-two.appspot.com>にあります。  
 デモサイトでは、フォントにWebフォント(Noto Sans Japanease)、レイアウトにMaterial Design Lightを使っています。  
 
-Chromeでのみ動作を確認していますが、ES6、HTML5、CSS3に対応したブラウザであれば動作するはずです。
+Chromeでのみ動作を確認していますが、ES6、HTML5、CSS3に対応したブラウザであれば動作するはずです。なおデモサイトはGoogleログインが必要です。
 
 ##Revisions
 
@@ -35,18 +59,18 @@ See [LICENSE](LICENSE)
 
 ## Run Locally
 1. Install the [App Engine Python SDK](https://developers.google.com/appengine/downloads).
-See the README file for directions. You'll need python 2.7 and [pip 1.4 or later](http://www.pip-installer.org/en/latest/installing.html) installed too.
+You'll need python 2.7 and [pip 1.4 or later](http://www.pip-installer.org/en/latest/installing.html) installed too.
 
 2. Clone this repository with
 
    ```
-   git clone https://github.com/roike/spa-template.git
+   git clone https://github.com/roike/SpaTemplate.git
    ```
 3. Install dependencies in the project's `lib/` directory.
    Note: App Engine can only import libraries from inside your project directory.
 
    ```
-   cd appengine-python-bottle-skeleton
+   cd appengine-your-project
    pip install -r requirements.txt -t lib/
    ```
 4. Run this project locally from the command line:

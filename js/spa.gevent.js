@@ -1,7 +1,7 @@
 /*
- * spa.gevent.js
- * *-----------------------------------------------------------------
+ * template spa.gevent.js
  * Copyrighted by ryuji.oike@gmail.com
+ * -----------------------------------------------------------------
 */
 
 /*jslint         browser : true, continue : true,
