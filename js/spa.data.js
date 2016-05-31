@@ -15,6 +15,8 @@
 spa.data = (() => {
   'use strict';
 
+  const stateMap = {socket: null};
+
   const makeAjax = (() => {
       
     //paramsがない場合はnull
@@ -34,7 +36,7 @@ spa.data = (() => {
         xhr.open('GET', url, true);
         xhr.onload = () => {
           if (xhr.status === 200) {
-            resolve(xhr.response);
+            resolve(JSON.parse(xhr.response));
           } else {
             reject(xhr.statusText);
           }
@@ -56,7 +58,7 @@ spa.data = (() => {
         xhr.onload = () => {
           //console.info(xhr.status);
           if (xhr.status === 200) {
-            resolve(xhr.response);
+            resolve(JSON.parse(xhr.response));
           } else {
             reject(xhr.statusText);
           }
@@ -98,10 +100,47 @@ spa.data = (() => {
 
   })();
 
+  const makeSio = (() => {
+    //オープンする通信チャネルはChannel Api
+
+    const openChannel = token => {
+      const channel = new goog.appengine.Channel(token);
+      const socket = channel.open();
+      socket.onopen = () => {console.info('通信チャネルが開通しました。');};
+      socket.onerror = () => {console.info('通信チャネルがタイムアウトしました。');};
+      socket.onclose = () => {console.info('通信チャネルが終了しました。');};
+      socket.onmessage = m => {
+        const data = JSON.parse(m.data);
+        spa.gevent.publish(data.callback, data.publish);
+      };
+      stateMap.socket = socket;
+    };
+
+    const sendMessage = (url, params) => {
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', url, true);
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+      xhr.send(encodedString(params));
+
+    };
+
+    const closeSocket = () => {
+      stateMap.socket.close();
+    };
+
+    return {
+      open: openChannel,
+      emit: sendMessage,
+      close: closeSocket
+    };
+
+  })();
 
   //公開するモジュールを定義
   return {
-    getAjax : makeAjax,
+    getAjax: makeAjax,
+    getSio: makeSio
   };
 })();
 

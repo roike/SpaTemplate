@@ -1,0 +1,10 @@
+queue:
+- name: default
+  rate: 1/s
+  max_concurrent_requests: 1
+#target: task
+- name: task
+  rate: 6/m
+  max_concurrent_requests: 6
+  bucket_size: 6
+  #  target: task

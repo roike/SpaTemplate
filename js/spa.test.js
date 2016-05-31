@@ -16,17 +16,16 @@ spa.test = (() => {
   //-------BEGIN SCOPE VARIABLES----------------------------
   let
     configMap = {
+      //null宣言するとspa.shellで値がセットされる
       anchor: null,
+      anchor_schema: null
     },
     stateMap  = {
       //ローカルキャッシュはここで宣言
-      container: null,
-      offset: 0,
-      tags: 'all'
+      container: null
     },
     domMap = {};
-  //定数はここで宣言
-  
+
   //公開モジュールを参照する場合はここで宣言
   const test_model = spa.model.test;
 
@@ -41,6 +40,7 @@ spa.test = (() => {
   //可読性のためtarget elementは分散させずにここで宣言
   const setDomMap = () => {
     domMap = {
+      content: document.getElementById('test-content')
     };
   };
 
@@ -48,16 +48,47 @@ spa.test = (() => {
   //---------------------- END DOM METHODS ---------------------
 
   //------------------- BEGIN EVENT HANDLERS -------------------
+  const onHandleClick = event => {
+    var element = _.find(event.path, (element) => {
+      //constはundefinedを宣言できないのでvarで宣言
+      if (element.tagName === 'A') {
+        return element;
+      }
+    });
+    //console.info(element);
+    //element.classList.contains("someTag")
+    if(element) {
+      const hrefList = element.href.split('/'),
+        schema = _.intersection(hrefList, configMap.anchor_schema);
+
+      //console.info(hrefList);
+      if(schema.length > 0) {
+        test_model.close(); 
+      }
+    }
+  };
 
   //グローバルカスタムイベントのコールバック
   const onTest = event => {
     const embed = event.detail;
     stateMap.container.innerHTML = spa.test.template(embed);
+    if (embed.entry === 'channel') test_model.channel();
+
+    setDomMap();
+
+    //ローカルイベントのバインド
+    document.getElementById('test-container').addEventListener('click', onHandleClick, false);
 
     //mdlイベントの再登録
     componentHandler.upgradeDom();
   };
 
+  const onChannel = event => {
+    const message = event.detail;
+    domMap.content
+    domMap.content.innerText = message;
+
+  };
   
   //-------------------- END EVENT HANDLERS --------------------
 
@@ -76,6 +107,7 @@ spa.test = (() => {
     
     //グローバルカスタムイベントのバインド
     spa.gevent.subscribe( stateMap.container, 'change-test', onTest);
+    spa.gevent.subscribe( stateMap.container, 'channel-test', onChannel);
 
     //ローカルイベントのバインド
 
@@ -100,12 +132,12 @@ spa.test.template =({entry, title, content}) => {
         <div class="mdl-card__title">
           <h2>${title}</h2>
         </div>
-        <div class="blog-section mdl-card__supporting-text">
-          ${content}
+        <div class="test-section mdl-card__supporting-text">
+          <div id="test-content">${content}</div>
         </div>
       </div>
-      <nav class="blog-nav mdl-cell mdl-cell--12-col">
-        <a href="/newist" id="newist-more" title="show more">
+      <nav class="test-nav mdl-cell mdl-cell--12-col">
+        <a href="/newist">
           <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" >
             <i class="material-icons" role="presentation">arrow_back</i>
           </button>

@@ -25,7 +25,6 @@ spa.newist = (() => {
       tags: 'all'
     },
     domMap = {};
-  //定数はここで宣言
   
   //公開モジュールを参照する場合はここで宣言
 
@@ -44,13 +43,10 @@ spa.newist = (() => {
     };
   };
 
-
   //---------------------- END DOM METHODS ---------------------
 
   //------------------- BEGIN EVENT HANDLERS -------------------
 
-
-  
   //-------------------- END EVENT HANDLERS --------------------
 
   //------------------- BEGIN PUBLIC METHODS -------------------
@@ -104,7 +100,6 @@ spa.newist.template = (() => {
                 </p>
                 <p>
                 データの送受信はコールバック仕様ではなく、PubSub仕様に沿ったイベント駆動です。
-                現在はまだSoketIOは未実装でXMLHttpRequest(Ajax)のみ実装ですが、Publishのイベント契機にはどちらも使えます。
                 </p>
                 <footer class="mdl-mini-footer">
                   <span>Test | pub</span>
@@ -122,6 +117,24 @@ spa.newist.template = (() => {
                 <p>
                 テスト動作確認のため人為的に未ログイン状態を作っています。
                 そのためリクエストurlがidentifyからidentify2にかわります。
+                </p>
+                <footer class="mdl-mini-footer">
+                  <span>Test | Identify</span>
+                </footer>
+              </div>
+            </section>
+            <section>
+              <div class="newist-section mdl-card__supporting-text">
+                <h3><a href="/test/channel">リアルタイム通信</a></h3>
+                <p>Channel Apiを使ってリアルタイム通信の動作を確認します。<br/>
+                リアルタイム通信テスト画面でサーバからのメッセージを待ち受けます。
+                2秒程度で「メッセージを受信しました。」と表示されます。
+                またconsoleで次の各ステージがログされます。
+                </p>
+                <p>
+                  「通信チャネルが開通しました。」<br/>
+                  5分経過すると「通信チャネルがタイムアウトしました。」<br/>
+                  前のページに戻ると「通信チャネルが終了しました。」
                 </p>
                 <footer class="mdl-mini-footer">
                   <span>Test | Identify</span>
