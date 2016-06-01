@@ -26,7 +26,7 @@ spa.shell = (() => {
     //congigMapに静的な構成値を配置
     configMap = {},
     //stateMapにshellで共有する動的情報を配置
-    //anchor_map=履歴の格納
+    //anchor_map=url履歴の格納
     //container=コンテンツを動的に切り替えるセクションを宣言
     stateMap  = {
       //ローカルキャッシュはここで宣言する
@@ -53,6 +53,9 @@ spa.shell = (() => {
   const deepCopy = spa.util.deepCopy;
   const testHistory = page => {
     //page=[schema,,,]
+    //現在のurl履歴を登録する
+    //戻るリンクの不適切な循環を防止する
+
     const pageHistory = page.join('_');
     let idx = stateMap.anchor_map.indexOf(pageHistory);
     if (page.length == 1) {
@@ -120,7 +123,7 @@ spa.shell = (() => {
   //ここでスルー処理を追加する
   //例:href='/blog/<pre>/<slug>'
   const handleAnchorClick = event => {
-    var element = _.find(event.path, element => {
+    var element = _.find(event.path, (element) => {
       //constはundefinedを宣言できないのでvarで宣言
       if (element.tagName === 'A') {
         return element;
@@ -178,10 +181,11 @@ spa.shell = (() => {
       const previous = testHistory(anchor_map_proposed.page);
       domMap.acct.innerText = auth;
       moduleMap[anchor].configModule({
-        //各anchorで参照する汎用objectを先頭のconfigMapで宣言する
+        //各anchorで参照する場合は先頭のconfigMapでnull宣言する
         anchor: anchor_map_proposed,
         previous: previous,
-        user: spa.model.user.get()
+        user: spa.model.user.get(),
+        anchor_schema: anchor_schema
       });
 
       moduleMap[anchor].initModule( stateMap.container );

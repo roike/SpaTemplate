@@ -1,7 +1,7 @@
 #Spa Template for GAE
 #use your application id
 application: elabo-two
-version: 1-03
+version: 1-04
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -18,7 +18,7 @@ automatic_scaling:
 inbound_services:
 #- xmpp_message
 #- warmup
-#- channel_presence
+- channel_presence
 - mail
 
 builtins:

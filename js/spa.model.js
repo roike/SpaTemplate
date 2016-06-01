@@ -26,12 +26,12 @@ spa.model = (() =>{
     user: null,
   };
 
+  //サーバ側で認証テスト(@allo_login)を行っている場合はこちらでresponseをwrapperする
   const publish = (customEvent, data) => {
     if (_.has(data, 'publish')) {
       spa.gevent.publish(customEvent, data.publish);
     } else {
       //サーバ側認証が通らない-->ローカルとサーバのidが不一致
-      //name=='a0'-->未ログイン-->ログインにリダイレクト
       //data=={id:,name:,anchor:,login_url:}の構造になる
       stateMap.user = data;
       spa.gevent.publish( 'spa-login', stateMap.user);
@@ -39,9 +39,6 @@ spa.model = (() =>{
   };
 
   //インスタンスオブジェクト------------------------
-  //初期値-->name='00'-->ログイン未確認
-  //未ログイン-->name=='a0'-->ログインにリダイレクト
-  //ゲスト-->name=='a1'-->guestログインを許可
   const User = (() => {
     const ajax = spa.data.getAjax;
 
@@ -51,7 +48,7 @@ spa.model = (() =>{
       const params = {page: JSON.stringify(urlList)};
       ajax.post('/login', params)
         .then(response => {
-          stateMap.user = JSON.parse(response);
+          stateMap.user = response;
           spa.gevent.publish( 'spa-login', stateMap.user);
         })
         .catch(error => {
@@ -68,13 +65,14 @@ spa.model = (() =>{
   })();
 
   const Test = (() => {
-    const ajax = spa.data.getAjax;
-
+    const 
+      ajax = spa.data.getAjax,
+      channel = spa.data.getSio;
+    
     const load = url => {
       ajax.post(url, {'user_id': stateMap.user.id})
         .then(response => {
-          const data = JSON.parse(response);
-          publish('change-test', data);
+          publish('change-test', response);
         })
         .catch(error => {
           console.info(error);
@@ -82,8 +80,26 @@ spa.model = (() =>{
         });
     };
 
+    const openChannel = () => {
+      ajax.post('/test/channel/token', {'user_id': stateMap.user.id})
+        .then(response => {
+          channel.open(response.token);
+        })
+        .catch(error => {
+          console.info(error);
+          spa.gevent.publish('spa-error', error);
+        });
+
+    };
+
+    const closeChannel = () => {
+      channel.close();
+    };
+
     return {
       load: load,
+      channel: openChannel,
+      close: closeChannel
     };
 
   })();
