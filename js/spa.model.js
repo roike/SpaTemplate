@@ -70,6 +70,20 @@ spa.model = (() =>{
       channel = spa.data.getSio;
     
     const load = url => {
+      if (url.includes('upload')) {
+        publish(
+            'change-test',
+            { publish:
+               {
+                entry: 'upload',
+                title: '画像ファイルアップロード',
+                content: '<input type="file" id="handle-image" />'
+               }
+            }
+            );
+        return false;
+      }
+
       ajax.post(url, {'user_id': stateMap.user.id})
         .then(response => {
           publish('change-test', response);
@@ -99,7 +113,8 @@ spa.model = (() =>{
     return {
       load: load,
       channel: openChannel,
-      close: closeChannel
+      close: closeChannel,
+      upload: file => ajax.up('/upload', file)
     };
 
   })();

@@ -137,7 +137,22 @@ spa.newist.template = (() => {
                   前のページに戻ると「通信チャネルが終了しました。」
                 </p>
                 <footer class="mdl-mini-footer">
-                  <span>Test | Identify</span>
+                  <span>Test | Channel</span>
+                </footer>
+              </div>
+            </section>
+            <section>
+              <div class="newist-section mdl-card__supporting-text">
+                <h3><a href="/test/upload">画像ファイルアップロード</a></h3>
+                <p>Cloud Storageに画像ファイルをアップロードし、
+                サムネイルを表示します。
+                </p>
+                <p>
+                アップロードできるのはファイルサイズが1MB以下の画像ファイルのみです。<br/>
+                アップロードした画像ファイルは自動で削除されます。
+                </p>
+                <footer class="mdl-mini-footer">
+                  <span>Test | Upload</span>
                 </footer>
               </div>
             </section>

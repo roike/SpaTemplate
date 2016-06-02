@@ -4,19 +4,49 @@
  参考にしたmmikowskiさんのSPAコードは<https://github.com/mmikowski>にあります。
 
 ##Features
-The event to hear  URI Anchor changes  created by a call Pushstate  is Popstate, like so:
+###Simple Routing
+Here is the routing part  example .
+
+```
+<nav class="mdl-navigation">
+  <h2>Thirdpenナビゲーション</h2>
+   <a href="/home" class="mdl-navigation__link">What are we doing this?</a>
+   <a href="/newist" class="mdl-navigation__link">エントリTest</a>
+   <a href="/contact" class="mdl-navigation__link">お問い合わせSample</a>
+   <a href="/me" class="mdl-navigation__link">About me</a>
+</nav>       
+```
+The url path call a function locally .The event to hear  URI Anchor changes  created by a call Pushstate  is Popstate, like so:
 
 ```
 const onPopstate = event => {
+  const anchor_map_proposed = spa.uriAnchor.makeAnchorMap();
+  const anchor = anchor_map_proposed.page[0];
   moduleMap[anchor].initModule( stateMap.container );
 };
-       
-window.addEventListener('popstate', onPopstate);
+
+const initModule = () => {
+ //ルーティング対象はすべてmoduleMapに組み込む
+ moduleMap.error = spa.error;
+ moduleMap.home = spa.home;
+ moduleMap.newist = spa.newist;
+ moduleMap.contact = spa.contact;
+        
+ window.addEventListener('popstate', onPopstate);
 ```
-The both of Pushstate and Popstate are specified from HTML5.  The spa.uriAnchor.js module  has two methods to create the Anchor component. They are  the setAnchor and the makeAnchor.  
+The both of Pushstate and Popstate are specified from HTML5.  The spa.uriAnchor.js module  has two methods to create the Anchor component. They are  the above makeAnchor and the next setAnchor. :
+  
+  HTML5で追加されたpopStateイベントでAnchorの変化を追跡しページの切り替えをローカルに行います。モジュールのspa.uriAnchorにはAnchorコンポーネントを生成するsetAnchorとmakeAnchorMapという2つのメソッドがあります。  
 
-HTML5で追加されたpopStateイベントでAnchorの変化を追跡しページの切り替えをローカルに行います。モジュールのspa.uriAnchorにはAnchorコンポーネントを生成するsetAnchorとmakeAnchorMapという2つのメソッドがあります。  
+```
+const onLogin = event => {
+  const user_map = event.detail;
+  spa.uriAnchor.setAnchor( { 'page': user_map.anchor }, false );
+};
+```
 
+
+###Publish/Subscribe Pattern
 The spa.gevent.js is a tiny publish/subscribe based module. This has synchronisation decoupling, so topics are published asynchronously.  
 
 サーバ側とのメッセージ交換には以下のようなPubSubパターンを使っています。
@@ -25,41 +55,37 @@ The spa.gevent.js is a tiny publish/subscribe based module. This has synchronisa
 spa.gevent.subscribe( stateMap.container, 'spa-login', onLogin  );
 
 ajax.post('/login', params)
-        .then(response => {
-          stateMap.user = JSON.parse(response);
-          spa.gevent.publish( 'spa-login', stateMap.user);
-        })
+  .then(response => {
+    stateMap.user = JSON.parse(response);
+    spa.gevent.publish( 'spa-login', stateMap.user);
+  })
 
 const onLogin = event => {
-    const user_map = event.detail;
-    spa.uriAnchor.setAnchor( { 'page': user_map.anchor }, false );
+  const user_map = event.detail;
+  spa.uriAnchor.setAnchor( { 'page': user_map.anchor }, false );
 };
 ```
 
+###GAE Apis implemented
+次のApiは実装例として予め組み込んでいます。
+
+* Channel Api
+* File Upload with Cloud Storage
+* Taskqueue Api
+* Micro Service
 
 ##Demo
-本テンプレートの動作検証サイトは<https://elabo-two.appspot.com>にあります。  
+本テンプレートのdemoは<https://elabo-two.appspot.com>にあります。  
 デモサイトでは、フォントにWebフォント(Noto Sans Japanease)、レイアウトにMaterial Design Lightを使っています。  
 
 Chromeでのみ動作を確認していますが、ES6、HTML5、CSS3に対応したブラウザであれば動作するはずです。なおデモサイトはGoogleログインが必要です。
 
-##Revisions
-
-* 2016--5-26 Ryuji Oike : Origin
-
-## Feedback
-Star this repo if you found it useful. Use the github issue tracker to give
-feedback on this repo and to ask for skeletons for other frameworks or use cases.
-
-## Contributing changes
-See [CONTRIB.md](CONTRIB.md)
-
-## Licensing
-See [LICENSE](LICENSE)
-
 ## Run Locally
 1. Install the [App Engine Python SDK](https://developers.google.com/appengine/downloads).
 You'll need python 2.7 and [pip 1.4 or later](http://www.pip-installer.org/en/latest/installing.html) installed too.
+  
+  Also need following libraries at locally:   
+Pillow
 
 2. Clone this repository with
 
@@ -73,6 +99,12 @@ You'll need python 2.7 and [pip 1.4 or later](http://www.pip-installer.org/en/la
    cd appengine-your-project
    pip install -r requirements.txt -t lib/
    ```
+Note:If you meet 'DistutilsOptionError: must supply either home or prefix/exec-prefix — not both', 
+You can make this "empty prefix" the default by adding a ~/.pydistutils.cfg file with the following contents:
+[install]  
+prefix=  
+But have in mind this causes the virtualenv command to break.
+
 4. Run this project locally from the command line:
 
    ```
@@ -97,13 +129,6 @@ appcfg.py -A <your-project-id> --oauth2 update .
 ```
 Congratulations! Your application is now live at your-project-id.appspot.com
 
-### Relational Databases and Datastore
-To add persistence to your models, use
-[NDB](https://developers.google.com/appengine/docs/python/ndb/) for
-scale.  Consider
-[CloudSQL](https://developers.google.com/appengine/docs/python/cloud-sql) if you need a
-relational database.
-
 ### Installing Libraries
 See the [Third party
 libraries](https://developers.google.com/appengine/docs/python/tools/libraries27)
@@ -111,6 +136,13 @@ page for libraries that are already included in the SDK.  To include SDK
 libraries, add them in your app.yaml file. All other libraries must be included
 in your project directory in order to be used by App Engine.  Only pure python
 libraries may be added to an App Engine project.
+
+##Revisions
+
+* 2016--5-26 Ryuji Oike : Origin
+
+## Licensing
+See [LICENSE](LICENSE)
 
 
 

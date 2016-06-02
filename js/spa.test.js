@@ -40,7 +40,8 @@ spa.test = (() => {
   //可読性のためtarget elementは分散させずにここで宣言
   const setDomMap = () => {
     domMap = {
-      content: document.getElementById('test-content')
+      content: document.getElementById('test-content'),
+      upload: document.getElementById('handle-image')
     };
   };
 
@@ -67,17 +68,37 @@ spa.test = (() => {
       }
     }
   };
+  const upLoad = event => {
+    const file = domMap.upload.files[0];
+    if (file === undefined || file.size > 1000000)  {
+      return false;
+    }
+    test_model.upload(file)
+      .then(response => {
+        const filename = response.filename;
+        const htmlString = `
+          <img class="thumbnail"
+             alt="Thumbnail"
+             src="/dwload/${filename}">`;
+
+        domMap.content.insertAdjacentHTML('afterend', htmlString);
+      })
+      .catch(error => {console.info(error);});
+  };
 
   //グローバルカスタムイベントのコールバック
   const onTest = event => {
     const embed = event.detail;
     stateMap.container.innerHTML = spa.test.template(embed);
-    if (embed.entry === 'channel') test_model.channel();
-
     setDomMap();
 
-    //ローカルイベントのバインド
-    document.getElementById('test-container').addEventListener('click', onHandleClick, false);
+    if (embed.entry === 'channel') {
+      stateMap.container.addEventListener('click', onHandleClick, false);
+      test_model.channel();
+      //document.getElementById('test-container').addEventListener('click', onHandleClick, false);
+    }else if (embed.entry === 'upload') {
+      domMap.upload.addEventListener('change', upLoad, false);
+    }
 
     //mdlイベントの再登録
     componentHandler.upgradeDom();
@@ -85,7 +106,6 @@ spa.test = (() => {
 
   const onChannel = event => {
     const message = event.detail;
-    domMap.content
     domMap.content.innerText = message;
 
   };

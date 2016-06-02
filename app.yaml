@@ -1,7 +1,7 @@
 #Spa Template for GAE
 #use your application id
 application: elabo-two
-version: 1-04
+version: 1-06
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -63,5 +63,7 @@ handlers:
 # TODO: List any other App Engine SDK libs you may need here.
 
 #See Document APIs & Reference --> Built in Thid-party Libraries
-#libraries:
+libraries:
+- name: PIL
+  version: latest
 
