@@ -81,7 +81,7 @@ spa.data = (() => {
         xhr.send(formData);
         xhr.onload = () => {
           if (xhr.status === 200) {
-            resolve(xhr.response);
+            resolve(JSON.parse(xhr.response));
           } else {
             reject(Error('Image didn\'t load successfully; error code:' + xhr.statusText));
           }

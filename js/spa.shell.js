@@ -28,7 +28,7 @@ spa.shell = (() => {
     //stateMapにshellで共有する動的情報を配置
     //anchor_map=url履歴の格納
     //container=コンテンツを動的に切り替えるセクションを宣言
-    stateMap  = {
+    stateMap = {
       //ローカルキャッシュはここで宣言する
       container: undefined,
       anchor_map: []

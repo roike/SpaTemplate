@@ -7,12 +7,24 @@ from bottle import Bottle, debug, request, response, static_file
 from json import loads, dumps
 import logging, uuid, time
 #localモジュール---------------------------------
+from controllers.entry import write_gcs, read_gcs
+
+FORMATS = dict(jpg='image/jpeg', png='image/png', gif='image/gif')
 
 bottle = Bottle()
 debug(True)
 
 #選択可能なanchorを設定する
 ALLOW_ANCHOR = ['login', 'home','newist', 'contact', 'test']
+
+#downLoadのget Requestを通過させる--------------------
+@bottle.route('/dwload/<filename>')
+def dwload_image(filename):
+    img_format = filename.split('.')[-1]
+    content_type = FORMATS.get(img_format)
+    if content_type:
+        response.headers['Content-Type'] = content_type
+        return read_gcs(filename)
 
 #---static_file section--------------------------------
 #urlを直接入力する場合(bookmarkも同じ)もここに入る
@@ -167,6 +179,15 @@ def raise_error():
                 response.status_code, u'error_test done.'))
     except Exception as e:
         logging.info(e)
+
+@bottle.route('/upload', method='post')
+def upload_file():
+    #filesize = int(request.headers['Content_Length'])
+    upload =request.files.get('file')
+    if upload:
+        filename = write_gcs(upload)
+        return dict(filename=filename)
+
 
 # Define an handler for 404 errors.
 @bottle.error(404)
