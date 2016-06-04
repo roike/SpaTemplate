@@ -41,7 +41,8 @@ spa.test = (() => {
   const setDomMap = () => {
     domMap = {
       content: document.getElementById('test-content'),
-      upload: document.getElementById('handle-image')
+      upload: document.getElementById('handle-image'),
+      spinner: stateMap.container.getElementsByClassName('mdl-spinner')[0]
     };
   };
 
@@ -73,6 +74,8 @@ spa.test = (() => {
     if (file === undefined || file.size > 1000000)  {
       return false;
     }
+    
+    domMap.spinner.classList.add('is-active');
     test_model.upload(file)
       .then(response => {
         const filename = response.filename;
@@ -82,6 +85,9 @@ spa.test = (() => {
              src="/dwload/${filename}">`;
 
         domMap.content.insertAdjacentHTML('afterend', htmlString);
+      })
+      .then(() => {
+        domMap.spinner.classList.remove('is-active');
       })
       .catch(error => {console.info(error);});
   };
@@ -154,6 +160,8 @@ spa.test.template =({entry, title, content}) => {
         </div>
         <div class="test-section mdl-card__supporting-text">
           <div id="test-content">${content}</div>
+          <!-- MDL Spinner Component -->
+          <div class="mdl-spinner mdl-js-spinner"></div>
         </div>
       </div>
       <nav class="test-nav mdl-cell mdl-cell--12-col">
