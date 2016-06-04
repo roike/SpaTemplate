@@ -1,7 +1,7 @@
 #Spa Template for GAE
 #use your application id
 application: elabo-two
-version: 1-06
+version: 1-15
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -15,6 +15,7 @@ automatic_scaling:
   #max_concurrent_requests: 10
 
 #Warmup requests work only if the minimum number of idle instances has been manually set in the app.yaml file
+#channel_presence inbound service must be enabled in app.yaml
 inbound_services:
 #- xmpp_message
 #- warmup
@@ -58,7 +59,7 @@ handlers:
 # here if you want to use them.  See
 # https://developers.google.com/appengine/docs/python/tools/libraries27 for
 # a list of libraries included in the SDK.  Third party libs that are *not* part
-# of the App Engine SDK don't need to be listed here, instead add them to your
+# of the App Engine SDK don't need to be listed here, instead add them to you
 # project directory, either as a git submodule or as a plain subdirectory.
 # TODO: List any other App Engine SDK libs you may need here.
 

@@ -87,7 +87,7 @@ spa.home.template = (() => {
               <img alt="About ThirdPen" src="../images/logo@2x.png">
             </figure>
             <p>
-            Single Page Application Template for Google App Enginの動作検証サイトです。
+            Single Page Application Template for Google App Enginのデモサイトです。
             Chromeでのみ動作を確認していますが、ES6、HTML5、CSS3に対応したブラウザであれば動作するはずです。
             </p>
             <p>

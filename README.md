@@ -72,7 +72,7 @@ const onLogin = event => {
 * Channel Api
 * File Upload with Cloud Storage
 * Taskqueue Api
-* Micro Service
+* Service behaves like a microservice. 
 
 ##Demo
 本テンプレートのdemoは<https://elabo-two.appspot.com>にあります。  
@@ -100,7 +100,7 @@ Pillow
    pip install -r requirements.txt -t lib/
    ```
 Note:If you meet 'DistutilsOptionError: must supply either home or prefix/exec-prefix — not both', 
-You can make this "empty prefix" the default by adding a ~/.pydistutils.cfg file with the following contents:
+You can make this "empty prefix" the default by adding a ~/.pydistutils.cfg file with the following contents:  
 [install]  
 prefix=  
 But have in mind this causes the virtualenv command to break.
@@ -110,8 +110,12 @@ But have in mind this causes the virtualenv command to break.
    ```
    dev_appserver.py .
    ```
+5. Override the routing rules using dispatch.yaml  
 
-Open [http://localhost:8080](http://localhost:8080)
+ ```
+dev_appserver.py dispatch.yaml app.yaml  youre_module.yaml
+```
+6. Open [http://localhost:8080](http://localhost:8080)
 
 See [the development server documentation](https://developers.google.com/appengine/docs/python/tools/devserver)
 for options when running dev_appserver.
@@ -139,7 +143,8 @@ libraries may be added to an App Engine project.
 
 ##Revisions
 
-* 2016--5-26 Ryuji Oike : Origin
+* 2016-05-26 Ryuji Oike : Origin
+* 2016-06-04 Ryuji Oike: Release 1.02
 
 ## Licensing
 See [LICENSE](LICENSE)

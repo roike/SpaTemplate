@@ -17,7 +17,10 @@ debug(True)
 #選択可能なanchorを設定する
 ALLOW_ANCHOR = ['login', 'home','newist', 'contact', 'test']
 
-#downLoadのget Requestを通過させる--------------------
+
+
+
+#downLoadのget Requestを通過させる-----------------
 @bottle.route('/dwload/<filename>')
 def dwload_image(filename):
     img_format = filename.split('.')[-1]
@@ -82,6 +85,7 @@ def user_login():
     anchor = '/' + '/'.join(loads(request.forms.get('page')))
     return ensured_login(anchor)
 
+#データ取得動作の確認
 @bottle.route('/test/publish', method='post')
 @allow_login
 def publish():
@@ -94,6 +98,7 @@ def publish():
 
     return res
 
+#ユーザチェック動作の確認
 @bottle.route('/test/identify', method='post')
 def test_identify():
     user = users.get_current_user()
@@ -116,6 +121,7 @@ def test_identify2():
 
     return res
 
+#リアルタイム通信の動作確認
 @bottle.route('/test/channel', method='post')
 @allow_login
 def test_channel():
@@ -151,13 +157,13 @@ def create_channel():
     #message送信
     time.sleep(2)
     taskqueue.Task(
-        url='/task/channel/send', 
+        url='/test/channel/send', 
         params={'custom': u'channel-test', 'cid': cid}
         ).add('task')
     
     return res
 
-@bottle.route('/task/channel/send', method='post')
+@bottle.route('/test/channel/send', method='post')
 def task_channel():
     try:
         cid = request.forms.get('cid')
@@ -170,6 +176,19 @@ def task_channel():
     except Exception as e:
         logging.info(e)
 
+# In the handler for _ah/channel/connected/
+@bottle.route('/_ah/channel/connected/', method='post')
+def connect_channel():
+    client_id = request.forms.get('from')
+    logging.info("Connected from the '%s'" % client_id )
+
+@bottle.route('/_ah/channel/disconnected/', method='post')
+def connect_channel():
+    client_id = request.forms.get('from')
+    logging.info("Disonnected from the '%s'" % client_id )
+
+
+#エラーページの表示動作確認
 @bottle.route('/test/error', method='post')
 @allow_login
 def raise_error():
@@ -180,6 +199,7 @@ def raise_error():
     except Exception as e:
         logging.info(e)
 
+#画像ファイルアップロード動作の確認
 @bottle.route('/upload', method='post')
 def upload_file():
     #filesize = int(request.headers['Content_Length'])

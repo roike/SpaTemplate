@@ -1,0 +1,10 @@
+application: elabo-two
+
+dispatch:
+- url: "*/task/*"
+  module: task
+- url: "*/_ah/start"
+  module: task
+- url: "*/*"
+  module: default
+
