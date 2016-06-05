@@ -48,9 +48,7 @@ spa.shell = (() => {
   //----------------- END MODULE SCOPE VARIABLES ---------------
 
   //-------------------- BEGIN UTILITY METHODS -----------------
-  const okikae = spa.util.okikae;
   const makeError = spa.util.makeError;
-  const deepCopy = spa.util.deepCopy;
   const testHistory = page => {
     //page=[schema,,,]
     //現在のurl履歴を登録する
@@ -118,10 +116,10 @@ spa.shell = (() => {
 
   //routing for local event
   //ここでイベントを捕捉する場合はschemaのどれかが必要
+  //例:href='/blog/<pre>/<slug>'
   //反面、Google loginなどschemaがあっても外部にスルーさせたい
   //イベントはバブリングをサブモジュールで止めるか、例えばerror.js
-  //ここでスルー処理を追加する
-  //例:href='/blog/<pre>/<slug>'
+  //あるいはここでスルー処理を追加する
   const handleAnchorClick = event => {
     var element = _.find(event.path, (element) => {
       //constはundefinedを宣言できないのでvarで宣言

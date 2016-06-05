@@ -3,7 +3,7 @@
 # spa template on GAE
 # main Copyright 2016 ryuji.oike@gmail.com
 from google.appengine.api import users, taskqueue, channel, memcache
-from bottle import Bottle, debug, request, response, static_file
+from bottle import Bottle, debug, request, response, static_file, abort
 from json import loads, dumps
 import logging, uuid, time
 #localモジュール---------------------------------
@@ -40,8 +40,7 @@ def init_anchor(anchor='home', abcd=None):
     if anchor in ALLOW_ANCHOR:
         return static_file('pen.html', root='./')
 
-    #templateで出力する
-    return 'Sorry, Nothing at this URL.'
+    abort(404)
 
 #-------decorator section-------------------------
 def allow_cors(func):
@@ -79,7 +78,7 @@ def allow_login(func):
 #上記不一致の場合は未ログイン状態に初期化してフロントに戻す
 #exceptが発生した場合は-------------------->
 #例外をreturnすればjs.spa.modelでcatchする
-#except Exception as e: return e
+#except Exception as e: abort(500)
 @bottle.route('/login', method='post')
 def user_login():
     anchor = '/' + '/'.join(loads(request.forms.get('page')))
@@ -175,6 +174,7 @@ def task_channel():
         channel.send_message(cid, message)
     except Exception as e:
         logging.info(e)
+        abort(500)
 
 # In the handler for _ah/channel/connected/
 @bottle.route('/_ah/channel/connected/', method='post')
@@ -198,6 +198,7 @@ def raise_error():
                 response.status_code, u'error_test done.'))
     except Exception as e:
         logging.info(e)
+        abort(500)
 
 #画像ファイルアップロード動作の確認
 @bottle.route('/upload', method='post')
