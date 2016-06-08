@@ -20,14 +20,10 @@ class Upload(object):
         #logging.info(filename)
         gcs_filename = '/%s/%s' % (BUCKET_IMAGES, filename)
         blob = upload.file.getvalue()
-        success = True
-        try:
-            with gcs.open(gcs_filename, 'w', content_type=b'binary/octet-stream', options={b'x-goog-acl': b'private'}) as f:
-                f.write(blob)
+        with gcs.open(gcs_filename, 'w', content_type=b'binary/octet-stream', options={b'x-goog-acl': b'private'}) as f:
+            f.write(blob)
 
-            return filename
-        except Exception as e:
-            logging.info(e)
+        return filename
         
 
     def read_gcs(self, filename):

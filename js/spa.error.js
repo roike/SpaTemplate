@@ -64,40 +64,52 @@ spa.error = (() => {
     if ( error.name === 'login' ) {
       container.innerHTML = `
           <article id="error-container">
-            <div class="mdl-card__title">
-              <h2>Spa Template</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-              <h3>認証エラー？</h3>
-              <p>${error.message}</p>
-              <div><a href="${error.data}">Googleアカウントにログインする</a></div>
+            <div class="error-content mdl-grid">
+              <div class="mdl-card mdl-cell--12-col mdl-shadow--2dp">
+                <div class="mdl-card__title">
+                  <h2>Spa Template</h2>
+                </div>
+                <div class="mdl-card__supporting-text">
+                  <h3>認証エラー？</h3>
+                  <p>${error.message}</p>
+                  <div><a href="${error.data}">Googleアカウントにログインする</a></div>
+                </div>
+              </div>
             </div>
           </article>`;
       
     } else if (error.name === 'schema') {
       container.innerHTML = `
           <article id="error-container">
-            <div class="mdl-card__title">
-              <h2>Spa Template</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-              <h3>ページ違反？</h3>
-              <p>${error.message}</p>
+            <div class="error-content mdl-grid">
+              <div class="mdl-card mdl-cell--12-col mdl-shadow--2dp">
+                <div class="mdl-card__title">
+                  <h2>Spa Template</h2>
+                </div>
+                <div class="mdl-card__supporting-text">
+                  <h3>ページ違反？</h3>
+                  <p>${error.message}</p>
+                </div>
+              </div>
             </div>
           </article>`;
+
     } else if (error.name === 'server') {
       container.innerHTML = `
           <article id="error-container">
-            <div class="mdl-card__title">
-              <h2>Spa Template</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-              <h3>serverで例外発生？</h3>
-              <p>${error.message}</p>
+            <div class="error-content mdl-grid">
+              <div class="mdl-card mdl-cell--12-col mdl-shadow--2dp">
+                <div class="mdl-card__title">
+                  <h2>Spa Template</h2>
+                </div>
+                <div class="mdl-card__supporting-text">
+                  <h3>serverで例外発生？</h3>
+                  <p>${error.message}</p>
+                </div>
+              </div>
             </div>
           </article>`;
     }
-
     //ローカルイベントのバインド
     document.getElementById('error-container').addEventListener('click', onHandleClick, false);
 

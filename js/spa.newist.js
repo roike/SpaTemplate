@@ -125,6 +125,18 @@ spa.newist.template = (() => {
             </section>
             <section>
               <div class="newist-section mdl-card__supporting-text">
+                <h3><a href="/test/spoofing">なりすましチェック</a></h3>
+                <p>Status:403 Forbiddenを確認します。<br/>
+                クライアント側のIDとサーバで管理しているIDが一致しない場合に
+                「Forbidden, No access right.」メッセージがエラー画面に表示されます。
+                </p>
+                <footer class="mdl-mini-footer">
+                  <span>Test | Spoofing</span>
+                </footer>
+              </div>
+            </section>
+            <section>
+              <div class="newist-section mdl-card__supporting-text">
                 <h3><a href="/test/channel">リアルタイム通信</a></h3>
                 <p>Channel Apiを使ってリアルタイム通信の動作を確認します。<br/>
                 リアルタイム通信テスト画面でサーバからのメッセージを待ち受けます。

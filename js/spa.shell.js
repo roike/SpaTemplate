@@ -96,10 +96,9 @@ spa.shell = (() => {
 
 
   const onError = event => {
-    console.info('customEventError called by errorcode:500');
     const error = {
       name: 'server',
-      message: 'request failed for server exception.',
+      message: event.detail,
       data: null
     };
     moduleMap.error.configModule({

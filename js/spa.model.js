@@ -83,8 +83,10 @@ spa.model = (() =>{
             );
         return false;
       }
-
-      ajax.post(url, {'user_id': stateMap.user.id})
+      
+      const params = {'user_id': stateMap.user.id}
+      if (url.includes('spoofing')) params.user_id = 'spoof';
+      ajax.post(url, params)
         .then(response => {
           publish('change-test', response);
         })

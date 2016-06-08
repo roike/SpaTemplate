@@ -1,0 +1,18 @@
+/*
+ * spa.error.css
+ * ryuji.oike@gmail.com
+*/
+
+#error-container {
+  padding: 42px 0;
+}
+
+
+.error-content {
+  max-width: 900px;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+
+

@@ -40,7 +40,7 @@ def init_anchor(anchor='home', abcd=None):
     if anchor in ALLOW_ANCHOR:
         return static_file('pen.html', root='./')
 
-    abort(404)
+    abort(404, 'Sorry, Nothing at this URL.')
 
 #-------decorator section-------------------------
 def allow_cors(func):
@@ -63,8 +63,9 @@ def allow_login(func):
         login_user = users.get_current_user()
         request_user = request.forms.get('user_id')
         if login_user is None or request_user != login_user.nickname():
-            anchor = '/' + '/'.join(loads(request.forms.get('page')))
-            return ensured_login(anchor)
+            response.status = 403
+            #response.content_type = 'application/json; charset=utf-8'
+            return {'error': 'Forbidden, No access right.'}
         return func(*args, **kwargs)
     return wrapper
 
@@ -119,6 +120,12 @@ def test_identify2():
     res.update({ 'user_id': users.get_current_user().nickname()})
 
     return res
+
+@bottle.route('/test/spoofing', method='post')
+@allow_login
+def test_spoofing():
+    #インターセプトされるのでここには到達しない
+    logging.info(u'spoofing test')
 
 #リアルタイム通信の動作確認
 @bottle.route('/test/channel', method='post')
@@ -195,26 +202,24 @@ def raise_error():
     try:
         raise Exception(
             'Call failed. Status code {}. Body {}'.format(
-                response.status_code, u'error_test done.'))
+                500, u'error_test done.'))
     except Exception as e:
         logging.info(e)
         abort(500)
 
 #画像ファイルアップロード動作の確認
+#fileの有無はjavascriptでチェック済み
 @bottle.route('/upload', method='post')
 def upload_file():
     #filesize = int(request.headers['Content_Length'])
     upload =request.files.get('file')
-    if upload:
+    try:
         filename = write_gcs(upload)
         return dict(filename=filename)
+    except Exception as e:
+        loging.info(e)
+        abort(500)
 
-
-# Define an handler for 404 errors.
-@bottle.error(404)
-def error_404(error):
-    """Return a custom 404 error."""
-    return 'Sorry, Nothing at this URL.'
 
 
 #---start utility section------------------------------

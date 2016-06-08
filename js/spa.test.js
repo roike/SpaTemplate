@@ -148,7 +148,7 @@ spa.test = (() => {
   //------------------- END PUBLIC METHODS ---------------------
 })();
 
-spa.test.template =({entry, title, content}) => {
+spa.test.template = ({entry, title, content}) => {
   return `
     <div class="test-content mdl-grid">
       <div class="mdl-card mdl-cell--12-col mdl-shadow--2dp">

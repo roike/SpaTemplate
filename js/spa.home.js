@@ -84,7 +84,7 @@ spa.home.template = (() => {
           <section class="home-section mdl-card__supporting-text">
             <h3>What we do ?</h3>
             <figure>
-              <img alt="About ThirdPen" src="../images/logo@2x.png">
+              <img alt="About ThirdPen" src="/images/logo@2x.png">
             </figure>
             <p>
             Single Page Application Template for Google App Enginのデモサイトです。

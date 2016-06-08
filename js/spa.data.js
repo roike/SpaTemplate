@@ -37,6 +37,9 @@ spa.data = (() => {
         xhr.onload = () => {
           if (xhr.status === 200) {
             resolve(JSON.parse(xhr.response));
+          } else if (xhr.status === 403) {
+            const response = JSON.parse(xhr.response);
+            reject(response.error);
           } else {
             reject(xhr.statusText);
           }
@@ -59,6 +62,9 @@ spa.data = (() => {
           //console.info(xhr.status);
           if (xhr.status === 200) {
             resolve(JSON.parse(xhr.response));
+          } else if (xhr.status === 403) {
+            const response = JSON.parse(xhr.response);
+            reject(response.error);
           } else {
             reject(xhr.statusText);
           }
