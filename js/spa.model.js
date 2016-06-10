@@ -29,17 +29,6 @@ spa.model = (() =>{
   //モックステータス--false-->fakeデータ使用
   const isFakeData = false;
 
-  //サーバ側で認証テスト(@allo_login)を行っている場合はこちらでresponseをwrapperする
-  const publish = (customEvent, data) => {
-    if (_.has(data, 'publish')) {
-      spa.gevent.publish(customEvent, data.publish);
-    } else {
-      //サーバ側認証が通らない-->ローカルとサーバのidが不一致
-      //data=={id:,name:,anchor:,login_url:}の構造になる
-      stateMap.user = data;
-      spa.gevent.publish( 'spa-login', stateMap.user);
-    }
-  };
 
   //インスタンスオブジェクト------------------------
   const User = (() => {
@@ -73,15 +62,13 @@ spa.model = (() =>{
 
     const load = url => {
       if (url.includes('upload')) {
-        publish(
+        spa.gevent.publish(
             'change-test',
-            { publish:
-               {
-                entry: 'upload',
-                title: '画像ファイルアップロード',
-                content: '<input type="file" id="handle-image" />'
-               }
-            }
+             {
+              entry: 'upload',
+              title: '画像ファイルアップロード',
+              content: '<input type="file" id="handle-image" />'
+             }
             );
         return false;
       }
@@ -89,8 +76,8 @@ spa.model = (() =>{
       const params = {'user_id': stateMap.user.id}
       if (url.includes('spoofing')) params.user_id = 'spoof';
       ajax.post(url, params)
-        .then(response => {
-          publish('change-test', response);
+        .then(data => {
+          spa.gevent.publish('change-test', data.publish);
         })
         .catch(error => {
           spa.gevent.publish('spa-error', error);
@@ -127,8 +114,8 @@ spa.model = (() =>{
     const sendMail = (url, params) => {
       params['user_id'] = stateMap.user.id;
       ajax.post(url, params)
-        .then(response => {
-          publish('change-contact', response);
+        .then(data => {
+          spa.gevent.publish('change-contact', data.publish);
         })
         .catch(error => {
           spa.gevent.publish('spa-error', error);
