@@ -15,7 +15,7 @@
 spa.gevent = (() => {
   'use strict';
     //---------------- BEGIN MODULE SCOPE VARIABLES --------------
-  let customSubMap = {};
+  const customSubMap = {};
 
   //----------------- END MODULE SCOPE VARIABLES ---------------
 
@@ -26,16 +26,16 @@ spa.gevent = (() => {
 
     if ( ! event_obj ) { return false; }
 
-    event = new CustomEvent(event_name, {detail: data});
+    const event = new CustomEvent(event_name, {detail: data});
     event_obj.dispatchEvent(event);
 
     return true;
   };
 
-  //--event_nameは競合不可
+  //--event_name has to be unique---------
   const subscribeEvent = function ( collection, event_name, fn ) {
     //console.info('bind collection %s', collection);
-    if ( customSubMap[ event_name ] ){
+    if ( _.has(customSubMap, event_name )){
       delete customSubMap[ event_name ];
     }
 
@@ -45,7 +45,7 @@ spa.gevent = (() => {
   };
 
   const unsubscribeEvent = function ( collection, event_name ) {
-    if ( ! customSubMap[ event_name ] ){ return false; }
+    if ( ! _.has(customSubMap, event_name )){ return false; }
 
     delete customSubMap[ event_name ];
 

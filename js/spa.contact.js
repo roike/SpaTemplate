@@ -23,6 +23,8 @@ spa.contact = (() => {
     domMap = {};
   //定数はここで宣言
   //公開モジュールを参照する場合はここで宣言
+  const contact_model = spa.model.contact;
+
   //----------------- END MODULE SCOPE VARIABLES ---------------
 
   //------------------- BEGIN UTILITY METHODS ------------------
@@ -34,11 +36,30 @@ spa.contact = (() => {
   //Class名はcontainer内でユニーク
   const setDomMap = function () {
     domMap = {
+      form: document.querySelector("form"),
+      message: document.getElementById('contact-message')
     };
   };
   //---------------------- END DOM METHODS ---------------------
 
   //------------------- BEGIN EVENT HANDLERS -------------------
+  const onSubmit = event => {
+
+    event.preventDefault();
+    const form = new FormData(domMap.form);
+    const params = _.object(
+        _.map(['name', 'email', 'note'], 
+          name => [name, form.get(name)])
+    );
+
+    console.info(params);
+    contact_model.mail(domMap.form.action, params);
+
+  };
+
+  const onContact = event => {
+    domMap.message.innerText = event.detail;
+  };
 
   //-------------------- END EVENT HANDLERS --------------------
 
@@ -55,9 +76,14 @@ spa.contact = (() => {
   const initModule = container => {
     container.innerHTML = spa.contact.template;
     stateMap.container = document.getElementById('contact-container');
-    
+    setDomMap();
+
     //グローバルカスタムイベントのバインド
-    
+    spa.gevent.subscribe( stateMap.container, 'change-contact', onContact);
+
+    //ローカルイベントのバインド
+    domMap.form.addEventListener('submit', onSubmit, false);
+
     //mdlイベントの再登録
     componentHandler.upgradeDom();
 
@@ -85,21 +111,21 @@ spa.contact.template = (() => {
             <img class="article-image" src=" /images/banner.png" border="0" alt="">
           </div>
           <div class="mdl-card__supporting-text">
-            <p>
-            問い合わせフォームのサンプルページです。投稿はしません。
+            <p id="contact-message">
+            投稿者のgoogleアカウントにメールします。
             </p>
-            <form action="/home" class="">
+            <form action="/contact" class="">
               <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" pattern="[A-Z,a-z, ]*" type="text" id="Name">
+                <input name="name" class="mdl-textfield__input" pattern="[A-Z,a-z, ]*" type="text" id="Name">
                 <label class="mdl-textfield__label" for="Name">Name...</label>
                 <span class="mdl-textfield__error">Letters and spaces only</span>
               </div>
               <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" id="Email">
+                <input name="email" class="mdl-textfield__input" type="text" id="Email">
                 <label class="mdl-textfield__label" for="Email">Email...</label>
               </div>
               <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <textarea class="mdl-textfield__input" type="text" rows="5" id="note"></textarea>
+                <textarea name="note" class="mdl-textfield__input" type="text" rows="5" id="note"></textarea>
                 <label class="mdl-textfield__label" for="note">Enter note</label>
               </div>
               <p>

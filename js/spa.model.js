@@ -26,6 +26,9 @@ spa.model = (() =>{
     user: null,
   };
 
+  //モックステータス--false-->fakeデータ使用
+  const isFakeData = false;
+
   //サーバ側で認証テスト(@allo_login)を行っている場合はこちらでresponseをwrapperする
   const publish = (customEvent, data) => {
     if (_.has(data, 'publish')) {
@@ -40,7 +43,7 @@ spa.model = (() =>{
 
   //インスタンスオブジェクト------------------------
   const User = (() => {
-    const ajax = spa.data.getAjax;
+    const ajax = isFakeData ? spa.fake.mockAjax : spa.data.getAjax;
 
     //stateMap.user = {id:,name:,anchor:,login_url:}
     const login = urlList => {
@@ -52,7 +55,6 @@ spa.model = (() =>{
           spa.gevent.publish( 'spa-login', stateMap.user);
         })
         .catch(error => {
-          console.info(error);
           spa.gevent.publish('spa-error', error);
         })
     };
@@ -66,9 +68,9 @@ spa.model = (() =>{
 
   const Test = (() => {
     const 
-      ajax = spa.data.getAjax,
+      ajax = isFakeData ? spa.fake.mockAjax : spa.data.getAjax,
       channel = spa.data.getSio;
-    
+
     const load = url => {
       if (url.includes('upload')) {
         publish(
@@ -91,7 +93,6 @@ spa.model = (() =>{
           publish('change-test', response);
         })
         .catch(error => {
-          console.info(error);
           spa.gevent.publish('spa-error', error);
         });
     };
@@ -102,7 +103,6 @@ spa.model = (() =>{
           channel.open(response.token);
         })
         .catch(error => {
-          console.info(error);
           spa.gevent.publish('spa-error', error);
         });
 
@@ -121,6 +121,24 @@ spa.model = (() =>{
 
   })();
 
+  const Contact =(() => {
+    const ajax = isFakeData ? spa.fake.mockAjax : spa.data.getAjax;
+
+    const sendMail = (url, params) => {
+      params['user_id'] = stateMap.user.id;
+      ajax.post(url, params)
+        .then(response => {
+          publish('change-contact', response);
+        })
+        .catch(error => {
+          spa.gevent.publish('spa-error', error);
+        });
+    };
+
+    return {
+      mail: sendMail
+    };
+  })();
 
   const initModule = () => {
     //userオブジェクト初期値生成-->初期値-->name='00'-->ログイン未確認
@@ -130,6 +148,7 @@ spa.model = (() =>{
   return {
     initModule: initModule,
     user: User,
-    test: Test
+    test: Test,
+    contact: Contact
   };
 })();

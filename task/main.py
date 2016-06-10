@@ -2,12 +2,15 @@
 # -*- coding: utf-8 -*-
 # spa template on GAE
 # task.main Copyright 2016 ryuji.oike@gmail.com
-from google.appengine.api import channel, mail, modules
+from google.appengine.api import mail, modules
 from bottle import Bottle, debug, request
-from json import dumps
-import logging, time
+import logging
 #localモジュール---------------------------------
 
+#mailの送信はtaskQueue経由でモジュールから送るため
+#Email API Authorized Sendersに,権限ある送信者のリストが必要
+#MAIL_SENDER = 'youraccount@gmail.com'
+MAIL_SENDER = 'ryuji.oike@gmail.com'
 
 bottle = Bottle()
 debug(True)
@@ -22,11 +25,22 @@ def start_handler():
 def send_mail(anchor):
      #loginモニター通知
     if anchor == 'login':
-        name = self.request.get('name')
+        name = request.forms.get('name')
         mail.send_mail(
-                'from', #実際の送信元におきかえ
-                'user_address', #実際の送信先に置き換え
-                'subject', #実際の件名に置き換え
-                'body' #実際の本文に置き換え
+                'from',
+                'user_address',
+                'subject',
+                'body'
                 )
+
+    elif anchor == 'contact':
+        try:
+            name = request.forms.get('name')
+            email = request.forms.get('email')
+            note = request.forms.get('note')
+            sender = MAIL_SENDER
+            logging.info('%s,%s,%s,%s' % (name, email, note, sender))
+            mail.send_mail(sender, email, name, note)
+        except Exception as e:
+            logging.error(e)
 
