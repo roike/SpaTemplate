@@ -221,11 +221,31 @@ def upload_file():
         abort(500)
 
 
+#contact動作の確認
+@bottle.route('/contact', method='post')
+def contact_mail():
+    user = users.get_current_user()
+    params={
+        'name': request.forms.get('name'),
+        'email': user.email(),
+        'note': request.forms.get('note')
+    }
+    logging.info(params)
+    try:
+        taskqueue.Task(
+            url='/task/mail/contact', 
+            params=params
+        ).add('task')
+        
+        return {'publish': u'メールを送信しました。'}
+    except Exception as e:
+        loging.info(e)
+        abort(500)
 
 #---start utility section------------------------------
 
 def send_mail(nickname):
-    #login mail送信
+    #login mailのinbound 送信
     taskqueue.Task(
             url='/task/mail/login', 
             params={'result': u'login', 'name': nickname}

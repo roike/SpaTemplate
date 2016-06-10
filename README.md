@@ -113,10 +113,12 @@ But have in mind this causes the virtualenv command to break.
 5. Override the routing rules using dispatch.yaml  
 
  ```
-dev_appserver.py dispatch.yaml app.yaml  youre_module.yaml
+dev_appserver.py --enable_sendmail=yes dispatch.yaml app.yaml youre_module.yaml
 ```
-6. Open [http://localhost:8080](http://localhost:8080)
+6. Open [http://localhost:8080](http://localhost:8080)  
+if override the routing, running at localhost:8081
 
+ 
 See [the development server documentation](https://developers.google.com/appengine/docs/python/tools/devserver)
 for options when running dev_appserver.
 
@@ -141,10 +143,15 @@ libraries, add them in your app.yaml file. All other libraries must be included
 in your project directory in order to be used by App Engine.  Only pure python
 libraries may be added to an App Engine project.
 
+### Mail API
+For Sender, the mail address need to be listed on Email API Authorized Senders.  
+See the [Using the App Engine Mail API](https://cloud.google.com/appengine/docs/python/mail/) page.  
+
 ##Revisions
 
 * 2016-05-26 Ryuji Oike : Origin
 * 2016-06-04 Ryuji Oike: Release 1.02
+* 2016-06-10 Ryuji Oike: Release 1.04
 
 ## Licensing
 See [LICENSE](LICENSE)
