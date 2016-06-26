@@ -116,7 +116,7 @@ spa.newist.template = (() => {
                 </p>
                 <p>
                 テスト動作確認のため人為的に未ログイン状態を作っています。
-                そのためリクエストurlがidentifyからidentify2にかわります。
+                そのためリクエストurlがidentifyからidentifiedにかわります。
                 </p>
                 <footer class="mdl-mini-footer">
                   <span>Test | Identify</span>

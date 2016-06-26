@@ -74,7 +74,22 @@ spa.model = (() =>{
       }
       
       const params = {'user_id': stateMap.user.id}
+
+      //Google loginに誘導
+      if (url.includes('identify')) {
+        ajax.post(url, params)
+          .then(response => {
+            stateMap.user = response;
+            spa.gevent.publish( 'spa-login', stateMap.user);
+          })
+          .catch(error => {
+            spa.gevent.publish('spa-error', error);
+          });
+        return false;
+      }
+
       if (url.includes('spoofing')) params.user_id = 'spoof';
+
       ajax.post(url, params)
         .then(data => {
           spa.gevent.publish('change-test', data.publish);
@@ -122,7 +137,12 @@ spa.model = (() =>{
         });
     };
 
+    const alertMessage = params => {
+      spa.gevent.publish('spa-message', params);
+    }
+
     return {
+      message: alertMessage,
       mail: sendMail
     };
   })();

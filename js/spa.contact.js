@@ -44,16 +44,30 @@ spa.contact = (() => {
 
   //------------------- BEGIN EVENT HANDLERS -------------------
   const onSubmit = event => {
-
     event.preventDefault();
     const form = new FormData(domMap.form);
     const params = _.object(
         _.map(['name', 'email', 'note'], 
           name => [name, form.get(name)])
     );
+    const formRect = domMap.form.getBoundingClientRect();
+    const posY = formRect.top;
+    const posX = formRect.left + 50;
+    const mesData = {
+      top: `${posY}px`,
+      left: `${posX}px`,
+      message: '投稿フォームが未記入です。'
+    };
 
-    console.info(params);
-    contact_model.mail(domMap.form.action, params);
+    //Validate params
+    if ( _.isEmpty(_.without(_.values(params), ''))) {
+      contact_model.message(mesData);
+    } else if (params.email.length === 0) {
+      mesData.message= 'Emailアドレスがありません。';
+      contact_model.message(mesData);
+    } else {
+      contact_model.mail(domMap.form.action, params);
+    }
 
   };
 
@@ -114,7 +128,7 @@ spa.contact.template = (() => {
             <p id="contact-message">
             投稿者のgoogleアカウントにメールします。
             </p>
-            <form action="/contact" class="">
+            <form action="/contact" class="form-contact">
               <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input name="name" class="mdl-textfield__input" pattern="[A-Z,a-z, ]*" type="text" id="Name">
                 <label class="mdl-textfield__label" for="Name">Name...</label>

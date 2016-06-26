@@ -1,4 +1,6 @@
-##Single Page Application Skeleton for Google App Engine with Python
+##Single Page Application Template for Google App Engine with Python
+This is a SPA template , based on the original works by mmikowski <https://github.com/mmikowski>  
+
 本テンプレートはmmikowskiさんの「シングルページWebアプリケーション」をひな形にしながらも、最近の技術動向も踏まえてGAEのWebアプリケーションテンプレートとして動作するようにしたものです。
 
  参考にしたmmikowskiさんのSPAコードは<https://github.com/mmikowski>にあります。
@@ -74,9 +76,12 @@ const onLogin = event => {
 * Taskqueue Api
 * Service behaves like a microservice. 
 
-##Demo
-本テンプレートのdemoは<https://elabo-two.appspot.com>にあります。  
-デモサイトでは、フォントにWebフォント(Noto Sans Japanease)、レイアウトにMaterial Design Lightを使っています。  
+##Live DEMO
+
+Check a live Demo here <https://elabo-two.appspot.com>.  
+デモサイトでは試験的にWebフォント(Noto Sans Japanease)とMaterial Design Lightを使っています。  
+
+Tested with only Chrome. However it will work in any modern browser that supports ES6, HTML5, CSS3.  
 
 Chromeでのみ動作を確認していますが、ES6、HTML5、CSS3に対応したブラウザであれば動作するはずです。なおデモサイトはGoogleログインが必要です。
 

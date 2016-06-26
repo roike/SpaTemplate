@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 # spa template on GAE
 # main Copyright 2016 ryuji.oike@gmail.com
+# ---------------------------------------------
+
 from google.appengine.api import users, taskqueue, channel, memcache
 from bottle import Bottle, debug, request, response, static_file, abort
 from json import loads, dumps
@@ -15,7 +17,7 @@ bottle = Bottle()
 debug(True)
 
 #選択可能なanchorを設定する
-ALLOW_ANCHOR = ['login', 'home','newist', 'contact', 'test']
+ALLOW_ANCHOR = ['login', 'home', 'newist', 'contact', 'test']
 
 
 
@@ -62,11 +64,12 @@ def allow_login(func):
     def wrapper(*args, **kwargs):
         login_user = users.get_current_user()
         request_user = request.forms.get('user_id')
-        if login_user is None or request_user != login_user.nickname():
-            response.status = 403
-            #response.content_type = 'application/json; charset=utf-8'
-            return {'error': 'Forbidden, No access right.'}
-        return func(*args, **kwargs)
+        if request_user == login_user.nickname():
+            return func(*args, **kwargs)
+        #if login_user is None or request_user != login_user.nickname():
+        response.status = 403
+        #response.content_type = 'application/json; charset=utf-8'
+        return {'error': 'Forbidden, No access right.'}
     return wrapper
 
 #---dynamic module section---------------------
@@ -94,7 +97,6 @@ def publish():
         'entry': u'publish',
         'title': u'データの取得'}
         }
-    res.update({ 'user_id': users.get_current_user().nickname()})
 
     return res
 
@@ -102,14 +104,14 @@ def publish():
 @bottle.route('/test/identify', method='post')
 def test_identify():
     user = users.get_current_user()
-    anchor = '/test/identify2'
+    anchor = '/test/identified'
     values = { 'id': 'a0', 'name': 'a0', 'anchor': anchor, 'login_url': None }
     values['login_url'] = users.create_login_url(anchor)
     
-    logging.info(values)
+    #logging.info(values)
     return values
 
-@bottle.route('/test/identify2', method='post')
+@bottle.route('/test/identified', method='post')
 @allow_login
 def test_identify2():
     res = { 'publish': {
@@ -117,7 +119,6 @@ def test_identify2():
         'entry': u'identify',
         'title': u'ユーザチェック'}
         }
-    res.update({ 'user_id': users.get_current_user().nickname()})
 
     return res
 
@@ -131,14 +132,13 @@ def test_spoofing():
 @bottle.route('/test/channel', method='post')
 @allow_login
 def test_channel():
-    user = users.get_current_user()
 
     res = { 'publish': {
         'content': u'通信チャネルをオープンしています。',
         'entry': u'channel',
         'title': u'リアルタイム通信'}
         }
-    res.update({ 'user_id': user.nickname()})
+
     return res
 
 @bottle.route('/test/channel/token', method='post')
@@ -158,14 +158,13 @@ def create_channel():
 
     res = { 'token': token }
 
-    #res.update({ 'user_id': user.nickname()})
 
     #message送信
     time.sleep(2)
     taskqueue.Task(
         url='/test/channel/send', 
-        params={'custom': u'channel-test', 'cid': cid}
-        ).add('task')
+        params={'custom': 'channel-test', 'cid': cid}
+        ).add('default')
     
     return res
 
@@ -241,6 +240,10 @@ def contact_mail():
     except Exception as e:
         loging.info(e)
         abort(500)
+
+#messageのfadein fadeoutの確認
+
+
 
 #---start utility section------------------------------
 

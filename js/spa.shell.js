@@ -22,7 +22,7 @@
 spa.shell = (() => {
   'use strict';
   //---------------- BEGIN MODULE SCOPE VARIABLES --------------
-  let
+  const
     //congigMapに静的な構成値を配置
     configMap = {},
     //stateMapにshellで共有する動的情報を配置
@@ -34,9 +34,10 @@ spa.shell = (() => {
       anchor_map: []
     },
     //動的に呼び出す他モジュールを格納
-    moduleMap = {},
-    //Domコレクションをキャッシュ
-    domMap = {};
+    moduleMap = {};
+
+  //Domコレクションをキャッシュ
+  let domMap = {};
 
   //定数はここで宣言
   const
@@ -108,15 +109,28 @@ spa.shell = (() => {
 
   };
 
-  const onMessage = ev => {
-    console.info(ev.detail);
+  const onMessage = event => {
+    const mesData = event.detail;
+    stateMap.container.insertAdjacentHTML('afterbegin', spa.shell.message(mesData.message));
+    const message = document.getElementById('spa-message');
+    message.style.top = mesData.top;
+    message.style.left = mesData.left;
+    if (message.classList.contains('is-paused')) {
+      message.classList.remove("is-paused");
+    }
+    const closeMessage = () => {
+      stateMap.container.removeChild(message);
+    };
+
+    message.addEventListener("animationend", closeMessage, false);
+    //_.delay(closeMessage, 7000, message);
 
   };
 
   //routing for local event
   //ここでイベントを捕捉する場合はschemaのどれかが必要
   //例:href='/blog/<pre>/<slug>'
-  //反面、Google loginなどschemaがあっても外部にスルーさせたい
+  //Google loginなどschemaがあっても外部にスルーさせたい
   //イベントはバブリングをサブモジュールで止めるか、例えばerror.js
   //あるいはここでスルー処理を追加する
   const handleAnchorClick = event => {
@@ -222,7 +236,7 @@ spa.shell = (() => {
     //グローバルカスタムイベントのバインド
     spa.gevent.subscribe( stateMap.container, 'spa-login', onLogin  );
     spa.gevent.subscribe( stateMap.container, 'spa-error', onError );
-    spa.gevent.subscribe( stateMap.container, 'message-marked', onMessage);
+    spa.gevent.subscribe( stateMap.container, 'spa-message', onMessage);
 
     // ローカルイベントのバインド
     document.addEventListener('click', handleAnchorClick, false);
@@ -245,3 +259,11 @@ spa.shell = (() => {
   };
   //------------------- END PUBLIC METHODS ---------------------
 })();
+
+spa.shell.message = message => {
+  return `
+    <div id="spa-message" class="fadeInAndOut is-paused">
+      <i class="material-icons">error_outline</i>
+      ${message}
+    </div>`;
+};

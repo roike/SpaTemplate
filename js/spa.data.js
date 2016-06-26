@@ -2,6 +2,7 @@
  * template spa.data.js
  * Copyright 2016 ryuji.oike@gmail.com
  *-----------------------------------------------------------------
+ * version:1.04
 */
 
 /*jslint         browser : true, continue : true,
@@ -41,6 +42,7 @@ spa.data = (() => {
             const response = JSON.parse(xhr.response);
             reject(response.error);
           } else {
+            //status==500はここでキャッチ
             reject(xhr.statusText);
           }
         };
@@ -66,10 +68,12 @@ spa.data = (() => {
             const response = JSON.parse(xhr.response);
             reject(response.error);
           } else {
+            //status==500はここでキャッチ
             reject(xhr.statusText);
           }
         };
         xhr.onerror = () => {
+          console.info(xhr.statusText);
           reject(xhr.statusText);
         };
       });

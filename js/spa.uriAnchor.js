@@ -1,6 +1,5 @@
 /*
  * template spa.uriAncjor.js
- * Copyright 2016 ryuji.oike@gmail.com
  *-----------------------------------------------------------------
  * 
 */

@@ -40,6 +40,7 @@ spa.test = (() => {
   //可読性のためtarget elementは分散させずにここで宣言
   const setDomMap = () => {
     domMap = {
+      container: document.getElementById('test-container'),
       content: document.getElementById('test-content'),
       upload: document.getElementById('handle-image'),
       spinner: stateMap.container.getElementsByClassName('mdl-spinner')[0]
@@ -98,8 +99,10 @@ spa.test = (() => {
     stateMap.container.innerHTML = spa.test.template(embed);
     setDomMap();
 
+    //ローカルイベントのバインド
+
     if (embed.entry === 'channel') {
-      stateMap.container.addEventListener('click', onHandleClick, false);
+      domMap.container.addEventListener('click', onHandleClick, false);
       test_model.channel();
       //document.getElementById('test-container').addEventListener('click', onHandleClick, false);
     }else if (embed.entry === 'upload') {
@@ -128,14 +131,11 @@ spa.test = (() => {
 
   // Begin public method /initModule/
   const initModule = container => {
-    container.innerHTML = '<article id="test-container"></article>';
-    stateMap.container = document.getElementById('test-container');
-    
+    stateMap.container = container;
+
     //グローバルカスタムイベントのバインド
     spa.gevent.subscribe( stateMap.container, 'change-test', onTest);
     spa.gevent.subscribe( stateMap.container, 'channel-test', onChannel);
-
-    //ローカルイベントのバインド
 
     test_model.load('/' + configMap.anchor.page.join('/'));
   };
@@ -150,6 +150,7 @@ spa.test = (() => {
 
 spa.test.template = ({entry, title, content}) => {
   return `
+  <article id="test-container">
     <div class="test-content mdl-grid">
       <div class="mdl-card mdl-cell--12-col mdl-shadow--2dp">
         <header class="test-header">
@@ -171,6 +172,7 @@ spa.test.template = ({entry, title, content}) => {
           </button>
         </a>
       </nav>
-    </div>`;
+    </div>
+  </article>`;
 };
 

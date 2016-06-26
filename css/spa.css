@@ -98,18 +98,29 @@ h1, h2, h3, h4, h5, h6 {
   color: #616161;
 }
 
-h1 {font-size: 3rem;}
-h2 {font-size: 1.7rem;}
-h3 {font-size: 1.5rem;}
-h4 {font-size: 1.2rem;}
-h5 {font-size: 1rem;}
-h6 {font-size: 1rem;}
+h1 {
+  font-size: 3rem;
+}
+h2 {
+  font-size: 1.7rem;
+}
+h3 {
+  font-size: 1.5rem;
+}
+h4 {
+  font-size: 1.2rem;
+}
+h5 {
+  font-size: 1rem;
+}
+h6 {
+  font-size: 1rem;
+}
 
 header h1 {
   line-height: 0;
 }
 
-#spa-message,
 nav h2, footer h2 {
   display: none;
 }
@@ -136,6 +147,29 @@ nav h2, footer h2 {
 }
 
 .shell-head-search {color: #757575;}
+
+/*--各モジュールで呼び出してspa.shellで生成-----*/
+#spa-message {
+  position: absolute;
+  width: 100%;
+  height: 40px;
+  z-index: 289;
+}
+
+#spa-message i { vertical-align: bottom;}
+@keyframes fadeinout {
+  from, to { opacity: 0; }
+  30% { opacity: 1; }
+}
+
+.fadeInAndOut {
+  animation: fadeinout 6s linear forwards;
+}
+
+.is-paused {
+  animation-play-state: paused;
+}
+
 
 /* -----Responsive layout----------- */
 @media screen and (max-width: 850px) {

@@ -1,7 +1,7 @@
 /*
- * template spa.util.js
- * General JavaScript utilities
+ * spa.util.js
  * Copyright 2016 ryuji.oike@gmail.com
+ *-----------------------------------------------------------------
 */
 
 /*jslint          browser : true,  continue : true,
@@ -84,6 +84,13 @@ spa.util = (() => {
     })();
   };
 
+  //--browser utilities-------------------------------
+  const encodeHTML = val => {
+    const dom = document.createElement('div');
+    dom.appendChild(document.createTextNode(val));
+    //console.info(dom.innerHTML);
+    return dom.innerHTML;
+  }
 
   return {
     makeError: makeError,
@@ -91,7 +98,8 @@ spa.util = (() => {
     deepCopy: deepCopy,
     setConfigMap: setConfigMap,
     ltrim: ltrim,
-    autoColor: autoColor
+    autoColor: autoColor,
+    encodeHTML: encodeHTML
   };
 
 
