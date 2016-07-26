@@ -40,7 +40,7 @@ def dwload_image(filename):
 @bottle.route('/<anchor>/<abcd>')
 def init_anchor(anchor='home', abcd=None):
     if anchor in ALLOW_ANCHOR:
-        return static_file('pen.html', root='./')
+        return static_file('pen.html', root='./static')
 
     abort(404, 'Sorry, Nothing at this URL.')
 

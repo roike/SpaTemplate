@@ -9,7 +9,7 @@
 #You can make this "empty prefix" the default by adding a ~/.pydistutils.cfg file with the following contents:
 #[install]
 #prefix=
-#But causes the virtualenv command to break.
+#However causes the virtualenv command to break.
 #----------------------
 #WSGI micro web-framework--http://bottlepy.org/docs/0.12/index.html
 bottle==0.12.9

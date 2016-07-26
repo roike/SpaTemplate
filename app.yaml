@@ -1,7 +1,7 @@
 #Spa Template for GAE
 #use your application id
 application: elabo-two
-version: 1-23
+version: 1-24
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -39,14 +39,17 @@ skip_files:
 handlers:
 # App Engine serves and caches static files contained in the listed directories
 # (and subdirectories). Uncomment and set the directory as needed.
+- url: /icon.png
+  static_files: static/icon.png
+  upload: static/icon.png
 - url: /css
-  static_dir: css
+  static_dir: static/css
   mime_type: text/css
-- url: /js
-  static_dir: js
-  mime_type: text/javascript
 - url: /images
-  static_dir: images
+  static_dir: static/images
+- url: /js
+  static_dir: static/js
+  mime_type: text/javascript
 # This handler tells app engine how to route requests to a WSGI application.
 # The script value is in the format <path.to.module>.<wsgi_application>
 # where <wsgi_application> is a WSGI application object.

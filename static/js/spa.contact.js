@@ -42,7 +42,7 @@ spa.contact = (() => {
   };
   //---------------------- END DOM METHODS ---------------------
 
-  //------------------- BEGIN EVENT HANDLERS -------------------
+  //------------ BEGIN LOCAL EVENT HANDLERS -------------------
   const onSubmit = event => {
     event.preventDefault();
     const form = new FormData(domMap.form);
@@ -71,6 +71,7 @@ spa.contact = (() => {
 
   };
 
+  //------------ BEGIN CUSTOM EVENT HANDLERS -------------------
   const onContact = event => {
     domMap.message.innerText = event.detail;
   };

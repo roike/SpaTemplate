@@ -37,7 +37,7 @@ spa.model = (() =>{
     //stateMap.user = {id:,name:,anchor:,login_url:}
     const login = urlList => {
       //console.info(urlList);
-      const params = {page: JSON.stringify(urlList)};
+      const params = {page: urlList};
       ajax.post('/login', params)
         .then(response => {
           stateMap.user = response;
