@@ -77,7 +77,7 @@ const onLogin = event => {
 * Service behaves like a microservice. 
 
 ##Live DEMO
-I use this SpaTemplate for my other projects, like SpaTodo, Blog system.
+I use this SpaTemplate for my other projects, like SpaTodo, Blog system.  
 You can check the features on thease projects.
 
 ## Run Locally
