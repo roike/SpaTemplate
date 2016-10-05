@@ -77,13 +77,8 @@ const onLogin = event => {
 * Service behaves like a microservice. 
 
 ##Live DEMO
-
-Check a live Demo here <https://elabo-two.appspot.com>.  
-デモサイトでは試験的にWebフォント(Noto Sans Japanease)とMaterial Design Lightを使っています。  
-
-Tested with only Chrome. However it will work in any modern browser that supports ES6, HTML5, CSS3.  
-
-Chromeでのみ動作を確認していますが、ES6、HTML5、CSS3に対応したブラウザであれば動作するはずです。なおデモサイトはGoogleログインが必要です。
+I use this SpaTemplate for my other projects, like SpaTodo, Blog system.
+You can check the features on thease projects.
 
 ## Run Locally
 1. Install the [App Engine Python SDK](https://developers.google.com/appengine/downloads).

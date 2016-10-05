@@ -58,7 +58,7 @@ spa.model = (() =>{
   const Test = (() => {
     const 
       ajax = isFakeData ? spa.fake.mockAjax : spa.data.getAjax,
-      channel = spa.data.getSio;
+      channel = spa.data.getChannel;
 
     const load = url => {
       if (url.includes('upload')) {

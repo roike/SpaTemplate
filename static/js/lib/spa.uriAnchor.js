@@ -1,7 +1,8 @@
 /*
  * template spa.uriAncjor.js
  *-----------------------------------------------------------------
- * 
+ * updated:2016-09-13
+ *
 */
 
 /*jslint         browser : true, continue : true,
@@ -63,8 +64,7 @@ spa.uriAnchor = (() => {
       history.pushState(state, null, uri_string);
     }
 
-    const event = new Event('popstate');
-    window.dispatchEvent(event);
+    window.dispatchEvent(new Event('popstate'));
 
   };
 
