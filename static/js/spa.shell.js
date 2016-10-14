@@ -1,6 +1,6 @@
 /*
  * template spa.shell.js
- * Copyright 2016 ryuji.oike@gmail.com
+ * See License
  * -----------------------------------------------------------------
 */
 
@@ -243,9 +243,10 @@ spa.shell = (() => {
     setDomMap();
 
     //グローバルカスタムイベントのバインド
-    spa.gevent.subscribe( stateMap.container, 'spa-login', onLogin  );
-    spa.gevent.subscribe( stateMap.container, 'spa-error', onError );
-    spa.gevent.subscribe( stateMap.container, 'spa-message', onMessage);
+    spa.gevent.initModule('spa', stateMap.container);
+    spa.gevent.subscribe( 'spa', 'spa-login', onLogin  );
+    spa.gevent.subscribe( 'spa', 'spa-error', onError );
+    spa.gevent.subscribe( 'spa', 'spa-message', onMessage);
 
     // ローカルイベントのバインド
     document.addEventListener('click', handleAnchorClick, false);
@@ -256,7 +257,6 @@ spa.shell = (() => {
     // Handle URI anchor change events.
     window.addEventListener('popstate', onPopstate);
 
-    window.dispatchEvent(new Event('popstate'));
 
   };
 

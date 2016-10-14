@@ -94,7 +94,7 @@ spa.contact = (() => {
     setDomMap();
 
     //グローバルカスタムイベントのバインド
-    spa.gevent.subscribe( stateMap.container, 'change-contact', onContact);
+    spa.gevent.subscribe('spa', 'change-contact', onContact);
 
     //ローカルイベントのバインド
     domMap.form.addEventListener('submit', onSubmit, false);

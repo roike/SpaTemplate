@@ -134,8 +134,8 @@ spa.test = (() => {
     stateMap.container = container;
 
     //グローバルカスタムイベントのバインド
-    spa.gevent.subscribe( stateMap.container, 'change-test', onTest);
-    spa.gevent.subscribe( stateMap.container, 'channel-test', onChannel);
+    spa.gevent.subscribe( 'spa', 'change-test', onTest);
+    spa.gevent.subscribe( 'spa', 'channel-test', onChannel);
 
     test_model.load('/' + configMap.anchor.page.join('/'));
   };
