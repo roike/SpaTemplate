@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# spa template on GAE
-# main Copyright 2016 ryuji.oike@gmail.com
+# spaTemplate main.py
+# See License
 # ---------------------------------------------
 
-from google.appengine.api import users, taskqueue, channel, memcache
+from google.appengine.api import users, taskqueue, memcache
 from bottle import Bottle, debug, request, response, static_file, abort
 from json import loads, dumps
 import logging, uuid, time
@@ -88,14 +88,25 @@ def user_login():
     anchor = '/' + '/'.join(loads(request.forms.get('page')))
     return ensured_login(anchor)
 
-#データ取得動作の確認
+#データ取得動作の確認-POST
 @bottle.route('/test/publish', method='post')
 @allow_login
 def publish():
     res = { 'publish': {
         'content': u'リクエストを取得しました。',
         'entry': u'publish',
-        'title': u'データの取得'}
+        'title': u'データの取得-POST'}
+        }
+
+    return res
+
+#データ取得動作の確認-GET
+@bottle.route('/test/publish2')
+def publish():
+    res = { 'publish': {
+        'content': u'リクエストを取得しました。',
+        'entry': u'publish',
+        'title': u'データの取得-GET'}
         }
 
     return res
@@ -127,72 +138,6 @@ def test_identify2():
 def test_spoofing():
     #インターセプトされるのでここには到達しない
     logging.info(u'spoofing test')
-
-#リアルタイム通信の動作確認
-@bottle.route('/test/channel', method='post')
-@allow_login
-def test_channel():
-
-    res = { 'publish': {
-        'content': u'通信チャネルをオープンしています。',
-        'entry': u'channel',
-        'title': u'リアルタイム通信'}
-        }
-
-    return res
-
-@bottle.route('/test/channel/token', method='post')
-@allow_login
-def create_channel():
-    user = users.get_current_user()
-    cache = memcache.get(user.user_id())
-    if cache:
-        cid = cache[0]
-        token = cache[1]
-    else:
-        cid = str(uuid.uuid4())
-        #tokenの有効時間は5分
-        token = channel.create_channel(cid, 5)
-        #tokenの保存は5分
-        memcache.add(key=user.user_id(), value=[cid, token], time=300)
-
-    res = { 'token': token }
-
-
-    #message送信
-    time.sleep(2)
-    taskqueue.Task(
-        url='/test/channel/send', 
-        params={'custom': 'channel-test', 'cid': cid}
-        ).add('default')
-    
-    return res
-
-@bottle.route('/test/channel/send', method='post')
-def task_channel():
-    try:
-        cid = request.forms.get('cid')
-        message = dumps({
-            'callback': request.forms.get('custom'),
-            'publish': u'メッセージを受信しました。'
-            })
-        time.sleep(2)
-        channel.send_message(cid, message)
-    except Exception as e:
-        logging.info(e)
-        abort(500)
-
-# In the handler for _ah/channel/connected/
-@bottle.route('/_ah/channel/connected/', method='post')
-def connect_channel():
-    client_id = request.forms.get('from')
-    logging.info("Connected from the '%s'" % client_id )
-
-@bottle.route('/_ah/channel/disconnected/', method='post')
-def connect_channel():
-    client_id = request.forms.get('from')
-    logging.info("Disonnected from the '%s'" % client_id )
-
 
 #エラーページの表示動作確認
 @bottle.route('/test/error', method='post')
@@ -246,13 +191,6 @@ def contact_mail():
 
 
 #---start utility section------------------------------
-
-def send_mail(nickname):
-    #login mailのinbound 送信
-    taskqueue.Task(
-            url='/task/mail/login', 
-            params={'result': u'login', 'name': nickname}
-            ).add('task')
 
 def ensured_login(anchor):
     #Notice:セキュリティ上user.user_id()はクライアントに直接戻さない

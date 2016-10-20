@@ -1,6 +1,6 @@
 /*
  * template spa.newist.js
- * Copyright 2016 ryuji.oike@gmail.com
+ * See License
  *-----------------------------------------------------------------
 */
 
@@ -92,9 +92,25 @@ spa.newist.template = (() => {
           <div id="entry-contents">
             <section>
               <div class="newist-section mdl-card__supporting-text">
-                <h3><a href="/test/publish">データの取得</a></h3>
+                <h3><a href="/test/publish">データの取得-POST</a></h3>
                 <p>サーバからメッセージを取得しTest画面に表示します。<br/>
                 Href契機でフロントエンドのルータがPostリクエストを送信します。
+                リクエストを受信したサーバは、json={user_id: user_id, publish: data}をフロントエンドに返信します。
+                データを受信すると、TestモジュールがHtmlを生成して表示します。
+                </p>
+                <p>
+                データの送受信はコールバック仕様ではなく、PubSub仕様に沿ったイベント駆動です。
+                </p>
+                <footer class="mdl-mini-footer">
+                  <span>Test | pub</span>
+                </footer>
+              </div>
+            </section>
+            <section>
+              <div class="newist-section mdl-card__supporting-text">
+                <h3><a href="/test/publish2">データの取得-GET</a></h3>
+                <p>サーバからメッセージを取得しTest画面に表示します。<br/>
+                Href契機でフロントエンドのルータがGetリクエストを送信します。
                 リクエストを受信したサーバは、json={user_id: user_id, publish: data}をフロントエンドに返信します。
                 データを受信すると、TestモジュールがHtmlを生成して表示します。
                 </p>
@@ -132,24 +148,6 @@ spa.newist.template = (() => {
                 </p>
                 <footer class="mdl-mini-footer">
                   <span>Test | Spoofing</span>
-                </footer>
-              </div>
-            </section>
-            <section>
-              <div class="newist-section mdl-card__supporting-text">
-                <h3><a href="/test/channel">リアルタイム通信</a></h3>
-                <p>Channel Apiを使ってリアルタイム通信の動作を確認します。<br/>
-                リアルタイム通信テスト画面でサーバからのメッセージを待ち受けます。
-                2秒程度で「メッセージを受信しました。」と表示されます。
-                またconsoleで次の各ステージがログされます。
-                </p>
-                <p>
-                  「通信チャネルが開通しました。」<br/>
-                  5分経過すると「通信チャネルがタイムアウトしました。」<br/>
-                  前のページに戻ると「通信チャネルが終了しました。」
-                </p>
-                <footer class="mdl-mini-footer">
-                  <span>Test | Channel</span>
                 </footer>
               </div>
             </section>

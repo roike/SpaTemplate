@@ -19,8 +19,8 @@ automatic_scaling:
 inbound_services:
 #- xmpp_message
 #- warmup
-- channel_presence
-- mail
+#- channel_presence
+#- mail
 
 builtins:
 - remote_api: on

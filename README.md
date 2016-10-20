@@ -155,6 +155,7 @@ See the [Using the App Engine Mail API](https://cloud.google.com/appengine/docs/
 * 2016-06-27 Ryuji Oike: Rekease 1.05
 * 2016-07-27 Ryuji Oike: Rekease 1.06
 * 2016-10-06 Ryuji Oike: Rekease 1.07
+* 2016-10-20 Ryuji Oike: Rekease 1.09
 
 ## Licensing
 See [LICENSE](LICENSE)
@@ -162,3 +163,4 @@ See [LICENSE](LICENSE)
 
 
 
+I

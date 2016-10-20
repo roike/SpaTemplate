@@ -3,7 +3,7 @@
  * Root namespace module
  * See License
  * ---------------------------------------------------------
- * Update 2016-10-14 
+ * Update 2016-10-18 
 */
 
 /*jslint           browser : true,   continue : true,
@@ -175,6 +175,9 @@ const spa = (() => {
             //console.info(xhr.status);
             if(xhr.status >= 200 && xhr.status < 300) {
               resolve(JSON.parse(xhr.response));
+            } else if (xhr.status === 401) {
+              const response = JSON.parse(xhr.response);
+              reject(response.error);
             } else if (xhr.status === 403) {
               const response = JSON.parse(xhr.response);
               reject(response.error);
@@ -191,54 +194,75 @@ const spa = (() => {
         });
       };
 
-      const ajaxGet = (url, params) => {
+      const ajaxGet = (url, params, token=null) => {
+        const headers = {};
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
+        url += '?' + encodedString(params);
+        if (_.last(url) === '?') {
+          url = _.without(url, '?').join('');
+        }
+        //console.info(url);
         return makeRequest({
           method: 'GET',
           url: url,
-          params: encodedString(params),
-          headers: {}
+          params: null,
+          headers: headers
         });
       };
 
-      const ajaxDelete = (url, params) => {
+      const ajaxDelete = (url, params, token=null) => {
+        const headers = {};
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
         return makeRequest({
           method: 'DELETE',
           url: url,
           params: encodedString(params),
-          headers: {}
+          headers: headers
         });
       };
 
-      const ajaxPost = (url, params) => {
+      const ajaxPost = (url, params, token=null) => {
+        const headers = {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+        };
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
         return makeRequest({
           method: 'POST',
           url: url,
           params: encodedString(params),
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-          }
+          headers: headers
         });
       };
 
-      const ajaxPatch = (url, params) => {
+      const ajaxPatch = (url, params, token=null) => {
+        const headers = {'Content-Type': 'application/json; charset=UTF-8'};
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
         return makeRequest({
           method: 'PATCH',
           url: url,
           params: JSON.stringify(params),
-          headers: {
-            'Content-Type': 'application/json; charset=UTF-8'
-          }
+          headers: headers
         });
       };
 
-      const ajaxPostByJson = (url, params) => {
+      const ajaxPostByJson = (url, params, token=null) => {
+        const headers = {'Content-Type': 'application/json; charset=UTF-8'};
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
         return makeRequest({
           method: 'POST',
           url: url,
           params: JSON.stringify(params),
-          headers: {
-            'Content-Type': 'application/json; charset=UTF-8'
-          }
+          headers: headers
         });
       };
 
@@ -434,7 +458,7 @@ const spa = (() => {
 
       //ローカルイベントのバインド
       //イベントのバブリングを止める場合はコメントを外す
-      //document.getElementById('error-container').addEventListener('click', onHandleClick, false);
+      document.getElementById('error-container').addEventListener('click', onHandleClick, false);
 
     };
 

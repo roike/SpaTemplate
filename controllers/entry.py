@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# SpaSkeleton controllers.entry Copyright 2016 ryuji.oike@gmail.com
+# spaTemplate controller.entry.py
+# See License
+# -------------------------------------------
 #APIモジュール---------------------------------
 from google.appengine.api import users, images
 import logging, cloudstorage as gcs

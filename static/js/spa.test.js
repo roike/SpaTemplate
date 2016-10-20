@@ -1,6 +1,6 @@
 /*
  * template spa.test.js
- * Copyright 2016 ryuji.oike@gmail.com
+ * See License
  *-----------------------------------------------------------------
 */
 
@@ -51,25 +51,6 @@ spa.test = (() => {
   //---------------------- END DOM METHODS ---------------------
 
   //------------------- BEGIN EVENT HANDLERS -------------------
-  const onHandleClick = event => {
-    var element = _.find(event.path, (element) => {
-      //constはundefinedを宣言できないのでvarで宣言
-      if (element.tagName === 'A') {
-        return element;
-      }
-    });
-    //console.info(element);
-    //element.classList.contains("someTag")
-    if(element) {
-      const hrefList = element.href.split('/'),
-        schema = _.intersection(hrefList, configMap.anchor_schema);
-
-      //console.info(hrefList);
-      if(schema.length > 0) {
-        test_model.close(); 
-      }
-    }
-  };
   const upLoad = event => {
     const file = domMap.upload.files[0];
     if (file === undefined || file.size > 1000000)  {
@@ -100,12 +81,7 @@ spa.test = (() => {
     setDomMap();
 
     //ローカルイベントのバインド
-
-    if (embed.entry === 'channel') {
-      domMap.container.addEventListener('click', onHandleClick, false);
-      test_model.channel();
-      //document.getElementById('test-container').addEventListener('click', onHandleClick, false);
-    }else if (embed.entry === 'upload') {
+    if (embed.entry === 'upload') {
       domMap.upload.addEventListener('change', upLoad, false);
     }
 
@@ -135,7 +111,6 @@ spa.test = (() => {
 
     //グローバルカスタムイベントのバインド
     spa.gevent.subscribe( 'spa', 'change-test', onTest);
-    spa.gevent.subscribe( 'spa', 'channel-test', onChannel);
 
     test_model.load('/' + configMap.anchor.page.join('/'));
   };

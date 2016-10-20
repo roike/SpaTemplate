@@ -1,6 +1,6 @@
 /*
  * template spa.model.js
- * Copyright 2016 ryuji.oike@gmail.com
+ * See License
  *-----------------------------------------------------------------
 */
 
@@ -56,9 +56,7 @@ spa.model = (() =>{
   })();
 
   const Test = (() => {
-    const 
-      ajax = isFakeData ? spa.fake.mockAjax : spa.data.getAjax,
-      channel = spa.data.getChannel;
+    const ajax = isFakeData ? spa.fake.mockAjax : spa.data.getAjax;
 
     const load = url => {
       if (url.includes('upload')) {
@@ -70,7 +68,7 @@ spa.model = (() =>{
               content: '<input type="file" id="handle-image" />'
              }
             );
-        return false;
+        return true;
       }
       
       const params = {'user_id': stateMap.user.id}
@@ -85,7 +83,18 @@ spa.model = (() =>{
           .catch(error => {
             spa.gevent.publish('spa-error', error);
           });
-        return false;
+        return true;
+      }
+      //Get Methodのテスト
+      if (url.includes('publish2')) {
+        ajax.get(url, {})
+          .then(data => {
+            spa.gevent.publish('change-test', data.publish);
+          })
+          .catch(error => {
+            spa.gevent.publish('spa-error', error);
+          });
+        return true;
       }
 
       if (url.includes('spoofing')) params.user_id = 'spoof';
@@ -99,52 +108,11 @@ spa.model = (() =>{
         });
     };
 
-    const openChannel = () => {
-      ajax.post('/test/channel/token', {'user_id': stateMap.user.id})
-        .then(response => {
-          channel.open(response.token);
-        })
-        .catch(error => {
-          spa.gevent.publish('spa-error', error);
-        });
-
-    };
-
-    const closeChannel = () => {
-      channel.close();
-    };
-
     return {
       load: load,
-      channel: openChannel,
-      close: closeChannel,
       upload: file => ajax.up('/upload', file)
     };
 
-  })();
-
-  const Contact =(() => {
-    const ajax = isFakeData ? spa.fake.mockAjax : spa.data.getAjax;
-
-    const sendMail = (url, params) => {
-      params['user_id'] = stateMap.user.id;
-      ajax.post(url, params)
-        .then(data => {
-          spa.gevent.publish('change-contact', data.publish);
-        })
-        .catch(error => {
-          spa.gevent.publish('spa-error', error);
-        });
-    };
-
-    const alertMessage = params => {
-      spa.gevent.publish('spa-message', params);
-    }
-
-    return {
-      message: alertMessage,
-      mail: sendMail
-    };
   })();
 
   const initModule = () => {
@@ -156,6 +124,5 @@ spa.model = (() =>{
     initModule: initModule,
     user: User,
     test: Test,
-    contact: Contact
   };
 })();
