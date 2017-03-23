@@ -1,12 +1,12 @@
-##Single Page Application Template for Google App Engine with Python
+## Single Page Application Template for Google App Engine with Python
 This is a SPA template , based on the original works by mmikowski <https://github.com/mmikowski>  
 
 本テンプレートはmmikowskiさんの「シングルページWebアプリケーション」をひな形にしながらも、最近の技術動向も踏まえてGAEのWebアプリケーションテンプレートとして動作するようにしたものです。
 
  参考にしたmmikowskiさんのSPAコードは<https://github.com/mmikowski>にあります。
 
-##Features
-###Simple Routing
+## Features
+### Simple Routing
 Here is the routing part  example .
 
 ```
@@ -48,7 +48,7 @@ const onLogin = event => {
 ```
 
 
-###Publish/Subscribe Pattern
+### Publish/Subscribe Pattern
 The spa.gevent.js is a tiny publish/subscribe based module. This has synchronisation decoupling, so topics are published asynchronously.  
 
 サーバ側とのメッセージ交換には以下のようなPubSubパターンを使っています。
@@ -68,7 +68,7 @@ const onLogin = event => {
 };
 ```
 
-###GAE Apis implemented
+### GAE Apis implemented
 次のApiは実装例として予め組み込んでいます。
 
 * Channel Api
@@ -76,7 +76,7 @@ const onLogin = event => {
 * Taskqueue Api
 * Service behaves like a microservice. 
 
-##Live DEMO
+## Live DEMO
 I use this SpaTemplate for my other projects, like SpaTodo, Blog system.  
 You can check the features on thease projects.
 
@@ -159,8 +159,3 @@ See the [Using the App Engine Mail API](https://cloud.google.com/appengine/docs/
 
 ## Licensing
 See [LICENSE](LICENSE)
-
-
-
-
-I
