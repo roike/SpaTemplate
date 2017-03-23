@@ -147,7 +147,7 @@ libraries may be added to an App Engine project.
 For Sender, the mail address need to be listed on Email API Authorized Senders.  
 See the [Using the App Engine Mail API](https://cloud.google.com/appengine/docs/python/mail/) page.  
 
-##Revisions
+## Revisions
 
 * 2016-05-26 Ryuji Oike : Origin
 * 2016-06-04 Ryuji Oike: Release 1.02
