@@ -1,5 +1,5 @@
 /*
- * template spa.shell.js
+ * spa Template shell.js
  * See License
  * -----------------------------------------------------------------
 */
@@ -12,38 +12,36 @@
 */
 /*global spa */
 
-/*新規モジュールを追加する場合のtodo---------------
+/*新規モジュールを追加する場合のtodo-------------------------
  * anchor_schemaに追加
- * moduleMapに追加
- * ------------------------------------------------
- * popupstateイベント契機で各モジュールの機能をマッピングする
- * 画面遷移ではHrefイベントを起点にする
+ * ---------------------
  */
+
 spa.shell = (() => {
+
   'use strict';
   //---------------- BEGIN MODULE SCOPE VARIABLES --------------
   const
     //congigMapに静的な構成値を配置
     configMap = {},
     //stateMapにshellで共有する動的情報を配置
-    //anchor_map=url履歴の格納
+    //anchor_map=履歴の格納
     //container=コンテンツを動的に切り替えるセクションを宣言
-    stateMap = {
+    stateMap  = {
       //ローカルキャッシュはここで宣言する
       container: undefined,
-      anchor_map: []
+      anchor_map: [],
     },
     //動的に呼び出す他モジュールを格納
-    moduleMap = {};
+    moduleMap = {},
 
-  //Domコレクションをキャッシュ
-  let domMap = {};
+    //Domコレクションをキャッシュ
+    domMap = {},
 
-  //定数はここで宣言
-  const
+    //定数はここで宣言
     //許可するanchorはここで宣言--モジュール名に一致
     anchor_schema = [
-      'newist', 'home', 'test'
+      'home', 'greeting'
     ];
 
   //----------------- END MODULE SCOPE VARIABLES ---------------
@@ -87,24 +85,18 @@ spa.shell = (() => {
   //--------------------- END UTILITY METHODS ------------------
 
   //--------------------- BEGIN DOM METHODS --------------------
-  //DOMメソッドにはページ要素の作成と操作を行う関数を配置
-  const setDomMap = () => {
-    domMap = {
-    //domコレクションをキャッシュするとドキュメントトラバーサル数を減らせる
-      acct: document.getElementById('shell-head-acct'),
-    };
-  };
   
   //--------------------- END DOM METHODS ----------------------
 
   //------------------- BEGIN EVENT HANDLERS -------------------
 
   //グローバルカスタムイベントのコールバック
-  const onLogin = event => {
-    const user_map = event.detail;
-    spa.uriAnchor.setAnchor( { 'page': user_map.anchor }, false );
+  const onIdentify = event => {
+    //apprication_idのチェック
+    //console.info(event.detail);
+    const app_map = event.detail
+    spa.uriAnchor.setAnchor( { 'page': app_map.anchor }, false );
   };
-
 
   const onError = event => {
     const error = {
@@ -120,43 +112,26 @@ spa.shell = (() => {
   };
 
   const onMessage = event => {
-    const mesData = event.detail;
-    stateMap.container.insertAdjacentHTML('afterbegin', spa.shell.message(mesData.message));
-    const message = document.getElementById('spa-message');
-    message.style.top = mesData.top;
-    message.style.left = mesData.left;
-    if (message.classList.contains('is-paused')) {
-      message.classList.remove("is-paused");
-    }
-    const closeMessage = () => {
-      stateMap.container.removeChild(message);
-    };
-
-    message.addEventListener("animationend", closeMessage, false);
-    //_.delay(closeMessage, 7000, message);
+    console.info(event.detail);
 
   };
 
-  //routing for local event
-  //ここでイベントを捕捉する場合はschemaのどれかが必要
+  //routing for local events
+  //ここでイベントを捕捉する場合はschemaのどれかが最初に必要
   //例:href='/blog/<pre>/<slug>'
-  //Google loginなどschemaがあっても外部にスルーさせたい
-  //イベントはバブリングをサブモジュールで止めるか、例えばerror.js
-  //あるいはここでスルー処理を追加する
   const handleAnchorClick = event => {
-    var element = _.find(event.path, (element) => {
-      //constはundefinedを宣言できないのでvarで宣言
+    const element = _.find(event.path, element => {
       if (element.tagName === 'A') {
         return element;
       }
+      return false;
     });
     //console.info(element);
     //element.classList.contains("someTag")
     if(element) {
-      const hrefList = element.href.split('/'),
-        schema = _.intersection(hrefList, anchor_schema);
+      const hrefList = element.href.split('/');
+      const schema = _.intersection(hrefList, anchor_schema);
 
-      //console.info(hrefList);
       if(schema.length > 0) {
         event.preventDefault();
         const anchor = _.rest(hrefList, _.indexOf(hrefList, schema[0]));
@@ -166,59 +141,45 @@ spa.shell = (() => {
     }
   };
 
-  /*
-   * app_idの監視
-   * urlの監視--schema以外のページ要求はエラーに誘導
-   * url履歴の管理
-   * 親履歴(anchor only)でリセット
-   * 新規の子履歴は追加
-   * 現在の履歴の後の履歴は削除
-   */
+  // urlの監視--schema以外のページ要求はエラーに誘導
+  // url履歴の管理
+  // 親履歴(anchor only)でリセット
+  // 新規の子履歴は追加
+  // 現在の履歴の後の履歴は削除
   const onPopstate = event => {
     try {
       //アドレスバーのanchorを適正テスト後に取り出す
       //引数はdefault_anchor,anchorがあればそれを優先
       const anchor_map_proposed = spa.uriAnchor.makeAnchorMap('home');
       //console.info(anchor_map_proposed);
-      const auth = spa.model.user.get().name;;
-      if (auth === '00') {
-        //loginチェックを行う
-        domMap.acct.innerText = '... processing ...';
-        spa.model.user.login(anchor_map_proposed.page);
+      const auth = spa.model.apps.get().appid;
+      if (auth === 'appspot') {
+        //apps未認証
+        spa.model.apps.identify(anchor_map_proposed.page);
         return false;
       } 
-      if (auth === 'a0') {
-        //未ログイン--Googleアカウント取得誘導
-        throw makeError(
-          'login',
-          'not authorized by the proposed account',
-          spa.model.user.get().login_url
-        );
-        return false;
-      }
 
       //認証済みを確認
       const anchor = anchor_map_proposed.page[0];
       const previous = testHistory(anchor_map_proposed.page);
-      domMap.acct.innerText = auth;
       moduleMap[anchor].configModule({
-        //各anchorで参照する場合は先頭のconfigMapでnull宣言する
+        //各anchorで参照する汎用objectを先頭のconfigMapで宣言する
         anchor: anchor_map_proposed,
         previous: previous,
-        user: spa.model.user.get(),
-        anchor_schema: anchor_schema
       });
 
       moduleMap[anchor].initModule( stateMap.container );
 
+      return true;
     }
     catch (error) {
-      //不適正なアドレス or 未認証はエラー発生
-      console.info('annchor_map_error called');
+      //不適正なアドレスはエラー発生
+      console.info(error);
       moduleMap.error.configModule({
         error_model: error
       });
       moduleMap.error.initModule( stateMap.container );
+      return false;
     }
   };
 
@@ -229,24 +190,20 @@ spa.shell = (() => {
 
   //------------------- BEGIN PUBLIC METHODS -------------------
   //外部に公開するものを明示する
-  //loader animation params={height:, top:, background: }
   
   const initModule = () => {
     //ルーティング対象はすべてmoduleMapに組み込む
     moduleMap.error = spa.error;
     _.each(anchor_schema, ele => {
       moduleMap[ele] = spa[ele];
-    });;
-
-
+    });
     stateMap.container = document.getElementById('spa');
-    setDomMap();
 
     //グローバルカスタムイベントのバインド
     spa.gevent.initModule('spa', stateMap.container);
-    spa.gevent.subscribe( 'spa', 'spa-login', onLogin  );
+    spa.gevent.subscribe( 'spa', 'spa-identify',  onIdentify);
     spa.gevent.subscribe( 'spa', 'spa-error', onError );
-    spa.gevent.subscribe( 'spa', 'spa-message', onMessage);
+    spa.gevent.subscribe( 'spa', 'message-marked', onMessage);
 
     // ローカルイベントのバインド
     document.addEventListener('click', handleAnchorClick, false);
@@ -257,22 +214,13 @@ spa.shell = (() => {
     // Handle URI anchor change events.
     window.addEventListener('popstate', onPopstate);
 
-
   };
 
   
   // End PUBLIC method /initModule/
   //shellが公開するメソッド
   return {
-    initModule: initModule,
+    initModule: initModule
   };
   //------------------- END PUBLIC METHODS ---------------------
 })();
-
-spa.shell.message = message => {
-  return `
-    <div id="spa-message" class="fadeInAndOut is-paused">
-      <i class="material-icons">error_outline</i>
-      ${message}
-    </div>`;
-};

@@ -1,6 +1,6 @@
 /*
- * template spa.fake.js
- * Copyright 2016 ryuji.oike@gmail.com
+ * spa Template fake.js
+ * See License
  */
 
 /*jslint         browser : true, continue : true,
@@ -14,9 +14,16 @@
 spa.fake = (function () {
   'use strict';
 
-
   const mockAjax = (() => {
-    const mockGet = () => {};
+    const mockGet = url => {
+      const pageList = url.split('/');
+      const tindex = pageList.indexOf('thirdpen') + 1;
+      const mockKey = pageList[tindex];
+      return new Promise((resolve, reject) => {
+        resolve(spa.fake.data[mockKey]);
+        reject();
+      });
+    };
 
     const mockPost = (url, params) => {
       const mockKey = _.last(url.split('/'));
@@ -40,14 +47,17 @@ spa.fake = (function () {
 })();
 
 spa.fake.data = (() => {
+  const fakedata = [
+    {
+      
+    }
+  ];
 
   return {
-    login: {
-      id: 'third-pen',
-      name: 'thirdpen',
-      anchor: '/home',
-      login_url: null
-    }
-  };
-
+    identify: {
+      appid: 'thirdpen',
+      anchor: '/home'
+    },
+    greeting: {publish: fakedata}
+    };
 })();

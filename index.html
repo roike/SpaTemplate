@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html class="mdc-typography" lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Single Page Application Template</title>
+    <link rel="shortcut icon" href="/icon.png">
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
+    <style>
+      :root {
+        --mdc-theme-primary: #0e4ead;
+      }
+      .mdc-ripple-surface.mdc-ripple-upgraded.mdc-button--primary::before,
+      .mdc-ripple-surface.mdc-ripple-upgraded.mdc-button--primary::after {
+        background-color: rgba(255, 255, 255, .2);
+      }
+      #greeting-form > button {
+        margin-top: 8px;
+      }
+    </style>
+    <!-- third-party javascript -->
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <!-- our javascript -->
+    <script src="/js/lib/spa.js"></script>
+    <script src="/js/fake.js"></script>
+    <script src="/js/shell.js"></script>
+    <script src="/js/model.js"></script>
+    <script src="/js/home.js"></script>
+    <script src="/js/greeting.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        spa.initModule();
+      });
+    </script>
+  </head>
+  <body>
+    <main>
+      <article id="spa"></article>
+    </main>
+  </body>
+</html>

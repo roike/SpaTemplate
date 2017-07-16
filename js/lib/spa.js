@@ -1,9 +1,8 @@
 /*
- * thirdpen spa.js
- * Root namespace module
+ * spa.js
  * See License
  * ---------------------------------------------------------
- * Update 2016-10-18 
+ * Update 2017-07-10 
 */
 
 /*jslint           browser : true,   continue : true,
@@ -81,7 +80,7 @@ const spa = (() => {
     let schemaList = null;
       
     //schemaにないページはdefault_pageに誘導
-    const setConfig = schema => { schemaList = schema; };
+    const setConfig = anchor_schema => { schemaList = anchor_schema; };
 
     //想定のケースは以下
     // domain/ --> anchor=''
@@ -146,7 +145,7 @@ const spa = (() => {
 
   const data = (() => {
 
-    const stateMap = {socket: null};
+    const stateMap = {};
 
     const makeAjax = (() => {
         
@@ -300,44 +299,9 @@ const spa = (() => {
 
     })();
 
-    const makeChannel = (() => {
-      //オープンする通信チャネルはChannel Api
-      //messageでcallするカスタムイベントは呼び出し元で設定する
-      const openChannel = (token, customevent) => {
-        const channel = new goog.appengine.Channel(token);
-        const socket = channel.open();
-        socket.onopen = () => {
-          gevent.publish(customevent, {onopen: '通信チャネルが開通しました。'});
-        };
-        socket.onerror = () => {
-          gevent.publish(customevent, {onerror: '通信チャネルがタイムアウトしました。'});
-        };
-        socket.onclose = () => {
-          console.info('Close Channel');
-        };
-        socket.onmessage = m => {
-          //console.info(m);
-          const data = JSON.parse(m.data);
-          gevent.publish(data.customeve, data);
-        };
-        stateMap.socket = socket;
-      };
-
-      const closeSocket = () => {
-        stateMap.socket.close();
-      };
-
-      return {
-        open: openChannel,
-        close: closeSocket
-      };
-
-    })();
-
     //公開するモジュールを定義
     return {
-      getAjax: makeAjax,
-      getChannel: makeChannel
+      getAjax: makeAjax
     };
   })();
 
@@ -457,7 +421,6 @@ const spa = (() => {
       container.innerHTML = spa.error[error.name](error);
 
       //ローカルイベントのバインド
-      //イベントのバブリングを止める場合はコメントを外す
       document.getElementById('error-container').addEventListener('click', onHandleClick, false);
 
     };
