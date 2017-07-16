@@ -93,4 +93,3 @@ javascript単体のSPAテンプレートにしました。
 
 ## Licensing
 See [LICENSE](LICENSE)
-
